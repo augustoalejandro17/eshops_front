@@ -85,6 +85,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         width: '100%',
         [theme.breakpoints.up('md')]: {
         width: '20ch',
+        outline: '1px solid black',
+        borderRadius: '25px'
         },
     },
 }));
@@ -231,10 +233,11 @@ function App(props) {
     <ThemeProvider theme={theme}>
       <React.Fragment>
         <CssBaseline />
-        <AppBar>
+        <AppBar style={{ background: '#F4F6FD' }}>
           <Toolbar>
               
           <Typography
+            style={{ color: 'black' }}
             variant="h6"
             noWrap
             component="div"
@@ -242,11 +245,12 @@ function App(props) {
           >
             Eshops
           </Typography>
-          <Search>
+          <Search style={{ color: 'black' }}variant="outlined">
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              style={{ color: 'black', marginColor: 'black' }}
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
@@ -254,7 +258,7 @@ function App(props) {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
                 <MailIcon />
               </Badge>
             </IconButton>
@@ -263,11 +267,12 @@ function App(props) {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={17} color="error" style={{ color: 'black' }}>
                 <NotificationsIcon />
               </Badge>
             </IconButton>
             <IconButton
+              style={{ color: 'black' }}
               size="large"
               edge="end"
               aria-label="account of current user"
@@ -281,6 +286,7 @@ function App(props) {
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
+              style={{ color: 'black' }}
               size="large"
               aria-label="show more"
               aria-controls={mobileMenuId}
