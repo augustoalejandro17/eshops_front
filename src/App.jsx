@@ -1,28 +1,27 @@
 import './App.css';
+import { Routes, Route, Link } from 'react-router-dom';
 import * as React from 'react';
-import DefaultAppBar from './components/DefaultAppBar';
-import CardComponent from './components/CardComponent';
+import Home from './views/Home';
+import Store from './views/Store';
 
-
-var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
-                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'},      
-                    {index: 3, title: 'Card Three', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 4, title: 'Card Four', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 5, title: 'Card Five', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 6, title: 'Card Six', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 7, title: 'Card Seven', description: 'This is a description', image: 'https://source.unsplash.com/random'},    
-                    {index: 8, title: 'Card Eight', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 9, title: 'Card Nine', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
-
-const App = (props) => {
-    
+const App = () => {
     return(
-        <DefaultAppBar {...props}>
-            <main>
-                <CardComponent cards={cards}/>
-            </main>
-        </DefaultAppBar>
+        <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/store" element={Store} />
+            <Route path="*" element={<NoMatch />} />
+        </Routes>
     )
 }
 
+function NoMatch() {
+    return (
+      <div>
+        <h2>Nothing to see here!</h2>
+        <p>
+          <Link to="/">Go to the home page</Link>
+        </p>
+      </div>
+    );
+  }
 export default App;
