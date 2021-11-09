@@ -15,13 +15,13 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 
 const theme = createTheme();
@@ -224,7 +224,7 @@ const DefaultAppBar = (props) => {
                 Eshops
                 </Typography>
             </Link>
-            <Search style={{ color: 'black' }}variant="outlined">
+            {/* <Search style={{ color: 'black' }}variant="outlined">
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -233,7 +233,7 @@ const DefaultAppBar = (props) => {
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
               />
-            </Search>
+            </Search> */}
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <IconButton size="large" aria-label="show 4 new mails" color="inherit">
@@ -241,7 +241,7 @@ const DefaultAppBar = (props) => {
                   <MailIcon />
                 </Badge>
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
                 color="inherit"
@@ -249,7 +249,7 @@ const DefaultAppBar = (props) => {
                 <Badge badgeContent={17} color="error" style={{ color: 'black' }}>
                   <NotificationsIcon />
                 </Badge>
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 style={{ color: 'black' }}
                 size="large"
@@ -261,6 +261,17 @@ const DefaultAppBar = (props) => {
                 color="inherit"
               >
                 <AccountCircle />
+              </IconButton>
+              <IconButton
+                style={{ color: 'black' }}
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                color="inherit"
+              >
+                <ShoppingCartIcon />
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
