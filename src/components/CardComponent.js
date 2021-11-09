@@ -14,7 +14,7 @@ const CardComponent = ({cards}) => {
         <Container sx={{ py: 8 }} maxWidth="md">
           <Grid container spacing={4}>
             {cards.map((card) => (
-                <Grid item key={card} xs={12} sm={6} md={4}>
+                <Grid item key={card.index} xs={12} sm={6} md={4}>
                     <Link style={{ textDecoration: "none" }} 
                         to={`/shop/${card.index}`}
                         key={card.index}

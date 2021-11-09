@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Outlet, Link } from "react-router-dom";
-import DefaultAppBar from './../components/DefaultAppBar';
+import { Outlet } from "react-router-dom";
+import DefaultAppBar from '../components/AppBarComponent';
 
 const DefaultHeader = (props) => {
     return (

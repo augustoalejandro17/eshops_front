@@ -3,14 +3,14 @@ import { Routes, Route, Link } from 'react-router-dom';
 import * as React from 'react';
 import DefaultHeader from './views/DefaultHeader';
 import Home from './views/Home';
-import Store from './views/Store';
+import Shop from './views/Shop';
 
 const App = () => {
     return(
         <Routes>
             <Route path="/" element={<DefaultHeader/>}>
                 <Route path="/" element={<Home/>}/>
-                <Route path="store" element={Store} />
+                <Route path="/shop/:shopIndex" element={<Shop/>}/>
                 <Route path="*" element={<NoMatch />} />
             </Route>
         </Routes>

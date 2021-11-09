@@ -20,7 +20,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-
+import { Link } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
@@ -210,71 +210,74 @@ const DefaultAppBar = (props) => {
       <React.Fragment>
         <CssBaseline />
         <AppBar style={{ background: '#F4F6FD' }}>
-          <Toolbar>
-              
-          <Typography
-            style={{ color: 'black' }}
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            Eshops
-          </Typography>
-          <Search style={{ color: 'black' }}variant="outlined">
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              style={{ color: 'black', marginColor: 'black' }}
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error" style={{ color: 'black' }}>
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              style={{ color: 'black' }}
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              style={{ color: 'black' }}
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-          </Toolbar>
-        </AppBar>
+            <Toolbar>
+            <Link style={{ textDecoration: "none" }} 
+                to={`/`}
+            >  
+                <Typography
+                style={{ color: 'black' }}
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                Eshops
+                </Typography>
+            </Link>
+            <Search style={{ color: 'black' }}variant="outlined">
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                style={{ color: 'black', marginColor: 'black' }}
+                placeholder="Search…"
+                inputProps={{ 'aria-label': 'search' }}
+              />
+            </Search>
+            <Box sx={{ flexGrow: 1 }} />
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={17} color="error" style={{ color: 'black' }}>
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                style={{ color: 'black' }}
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </Box>
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <IconButton
+                style={{ color: 'black' }}
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </Box>
+            </Toolbar>
+          </AppBar>
         <Toolbar id="back-to-top-anchor" />
         {renderMobileMenu}
         {renderMenu}
