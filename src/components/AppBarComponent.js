@@ -236,11 +236,15 @@ const DefaultAppBar = (props) => {
             </Search> */}
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
-                  <MailIcon />
-                </Badge>
-              </IconButton>
+                {/* <Link style={{ textDecoration: "none" }} 
+                    to={`/messages`}
+                > 
+                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                        <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
+                        <MailIcon />
+                        </Badge>
+                    </IconButton>
+                </Link> */}
               {/* <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
@@ -250,29 +254,33 @@ const DefaultAppBar = (props) => {
                   <NotificationsIcon />
                 </Badge>
               </IconButton> */}
-              <IconButton
-                style={{ color: 'black' }}
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <IconButton
-                style={{ color: 'black' }}
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
-              >
-                <ShoppingCartIcon />
-              </IconButton>
+                <IconButton
+                    style={{ color: 'black' }}
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                <Link style={{ textDecoration: "none" }} 
+                    to={`/cart`}
+                > 
+                    <IconButton
+                        style={{ color: 'black' }}
+                        size="large"
+                        edge="end"
+                        aria-label="account of current user"
+                        aria-controls={menuId}
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                        <ShoppingCartIcon />
+                    </IconButton>
+                </Link>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
