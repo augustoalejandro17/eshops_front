@@ -1,15 +1,18 @@
 import './App.css';
 import { Routes, Route, Link } from 'react-router-dom';
 import * as React from 'react';
+import DefaultHeader from './views/DefaultHeader';
 import Home from './views/Home';
 import Store from './views/Store';
 
 const App = () => {
     return(
         <Routes>
-            <Route path="/" element={<Home/>} />
-            <Route path="/store" element={Store} />
-            <Route path="*" element={<NoMatch />} />
+            <Route path="/" element={<DefaultHeader/>}>
+                <Route path="/" element={<Home/>}/>
+                <Route path="store" element={Store} />
+                <Route path="*" element={<NoMatch />} />
+            </Route>
         </Routes>
     )
 }

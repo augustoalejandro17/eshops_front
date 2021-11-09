@@ -1,5 +1,5 @@
 import * as React from 'react';
-import DefaultAppBar from './../components/DefaultAppBar';
+
 import CardComponent from './../components/CardComponent';
 
 var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
@@ -12,13 +12,11 @@ var cards = [{index: 1, title: 'Card One', description: 'This is a description',
                     {index: 8, title: 'Card Eight', description: 'This is a description', image: 'https://source.unsplash.com/random'},
                     {index: 9, title: 'Card Nine', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
 
-const Home = (props) => {
+const Home = () => {
     return (
-        <DefaultAppBar {...props}>
-            <main>
-                <CardComponent cards={cards}/>
-            </main>
-        </DefaultAppBar>
+        <main>
+            <CardComponent cards={cards}/>
+        </main>
     );
 }
 
