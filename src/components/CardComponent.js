@@ -23,10 +23,10 @@ const CardComponent = ({cards}) => {
                 >
                   <CardMedia
                     component="img"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
+                    // sx={{
+                    //   // 16:9
+                    //   pt: '56.25%',
+                    // }}
                     image={card.image}
                     alt="random"
                   />
