@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // @mui/material components
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 
 const styles = {

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 // @mui/material components
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import Button from "@mui/material/Button";
 
 import styles from "assets/jss/material-kit-react/components/paginationStyle.js";

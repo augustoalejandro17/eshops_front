@@ -2,7 +2,7 @@ import * as React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 // @material-ui/icons
 import Camera from "@mui/icons-material/Camera";
 import Palette from "@mui/icons-material/Palette";

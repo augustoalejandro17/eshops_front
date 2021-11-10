@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
 
 // @mui/material components
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Tooltip from "@mui/material/Tooltip";

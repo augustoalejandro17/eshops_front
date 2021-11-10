@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 // material-ui core components
 import { List, ListItem } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 // @mui/icons-material
 import Favorite from "@mui/icons-material/Favorite";
