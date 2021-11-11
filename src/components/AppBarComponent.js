@@ -19,7 +19,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
@@ -149,8 +149,12 @@ const DefaultAppBar = (props) => {
         open={isMenuOpen}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+            <NavLink style={{ textDecoration: "none", color: "black" }} 
+                to={`/profile`}>  Profile
+            </NavLink>
+        </MenuItem>
+        {/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
       </Menu>
     );
 
