@@ -210,7 +210,7 @@ const DefaultAppBar = (props) => {
         </Menu>
     );
     return(
-        <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <React.Fragment>
         <CssBaseline />
         <AppBar style={{ background: '#F4F6FD' }}>

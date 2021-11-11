@@ -7,6 +7,11 @@ import Shop from './views/Shop';
 import Messages from './views/Messages';
 import Profile from './views/Profile';
 import ShoppingCart from './views/ShoppingCart';
+import LoginScreen from './views/LoginScreen';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+
+const theme = createTheme();
 
 const App = () => {
     return(
@@ -18,6 +23,7 @@ const App = () => {
                 <Route path="/cart" element={<ShoppingCart/>}/>
                 <Route path="/shop/:shopIndex" element={<Shop/>}/>
                 <Route path="*" element={<NoMatch />} />
+                <Route path="/login" element={<LoginScreen />} />
             </Route>
         </Routes>
     )
