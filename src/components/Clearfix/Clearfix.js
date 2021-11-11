@@ -1,7 +1,7 @@
 import React from "react";
 
 // mterial-ui components
-import { makeStyles } from "@mui/styles";
+import useClasses from "components/UseClasses";
 
 const styles = {
   clearfix: {
@@ -15,10 +15,8 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
-
 export default function Clearfix() {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   return <div className={classes.clearfix} />;
 }
 

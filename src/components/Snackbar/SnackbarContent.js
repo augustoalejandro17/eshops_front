@@ -12,11 +12,11 @@ import Close from "@mui/icons-material/Close";
 
 import styles from "assets/jss/material-kit-react/components/snackbarContentStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function SnackbarContent(props) {
   const { message, color, close, icon } = props;
-  const classes = useStyles();
+  const classes = useClasses(styles);
   var action = [];
   const closeAlert = () => {
     setAlert(null);

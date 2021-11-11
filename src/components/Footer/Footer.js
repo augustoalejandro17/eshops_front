@@ -13,10 +13,10 @@ import Favorite from "@mui/icons-material/Favorite";
 
 import styles from "assets/jss/material-kit-react/components/footerStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Footer(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { whiteFont } = props;
   const footerClasses = classNames({
     [classes.footer]: true,

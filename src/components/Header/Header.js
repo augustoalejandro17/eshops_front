@@ -4,7 +4,6 @@ import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // @mui/material components
-import { makeStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -16,10 +15,10 @@ import Menu from "@mui/icons-material/Menu";
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Header(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   React.useEffect(() => {
     if (props.changeColorOnScroll) {

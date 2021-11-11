@@ -20,26 +20,7 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
 
-import { useMemo } from 'react';
-import { css } from '@emotion/css';
-import { useTheme } from '@emotion/react';
-
-// const useStyles = makeStyles(styles);
-const useClasses = stylesElement => {
-  const theme = useTheme();
-  return useMemo(() => {
-    const rawClasses = typeof stylesElement === 'function'
-      ? stylesElement(theme)
-      : stylesElement;
-    const prepared = {};
-
-    Object.entries(rawClasses).forEach(([key, value = {}]) => {
-      prepared[key] = css(value);
-    });
-
-    return prepared;
-  }, [stylesElement, theme]);
-};
+import useClasses from "components/UseClasses";
 
 export default function HeaderLinks(props) {
   const classes = useClasses(styles);

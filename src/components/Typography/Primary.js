@@ -6,10 +6,10 @@ import { makeStyles } from "@mui/styles";
 // core components
 import styles from "assets/jss/material-kit-react/components/typographyStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Primary(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { children } = props;
   return (
     <div className={classes.defaultFontStyle + " " + classes.primaryText}>

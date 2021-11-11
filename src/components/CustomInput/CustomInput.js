@@ -11,10 +11,10 @@ import Input from "@mui/material/Input";
 
 import styles from "assets/jss/material-kit-react/components/customInputStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function CustomInput(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const {
     formControlProps,
     labelText,

@@ -10,10 +10,10 @@ import Button from "@mui/material/Button";
 
 import styles from "assets/jss/material-kit-react/components/paginationStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Pagination(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { pages, color } = props;
   return (
     <ul className={classes.pagination}>

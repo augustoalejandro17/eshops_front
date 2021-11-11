@@ -9,11 +9,10 @@ import { makeStyles } from "@mui/styles";
 
 // core components
 import styles from "assets/jss/material-kit-react/components/cardStyle.js";
-
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Card(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { className, children, plain, carousel, ...rest } = props;
   const cardClasses = classNames({
     [classes.card]: true,

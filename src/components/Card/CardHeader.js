@@ -10,10 +10,10 @@ import { makeStyles } from "@mui/styles";
 // core components
 import styles from "assets/jss/material-kit-react/components/cardHeaderStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function CardHeader(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { className, children, color, plain, ...rest } = props;
   const cardHeaderClasses = classNames({
     [classes.cardHeader]: true,

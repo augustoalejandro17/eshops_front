@@ -5,7 +5,6 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 
 // @mui/material components
-import { makeStyles } from "@mui/styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
@@ -14,15 +13,14 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
 import styles from "assets/jss/material-kit-react/components/navPillsStyle.js";
-
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function NavPills(props) {
   const [active, setActive] = React.useState(props.active);
   const handleChange = (event, active) => {
     setActive(active);
   };
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { tabs, color, horizontal, alignCenter } = props;
   const flexContainerClasses = classNames({
     [classes.flexContainer]: true,

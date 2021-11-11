@@ -20,7 +20,7 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-kit-react/components/customDropdownStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function CustomDropdown(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,7 +43,7 @@ export default function CustomDropdown(props) {
     }
     setAnchorEl(null);
   };
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const {
     buttonText,
     buttonIcon,

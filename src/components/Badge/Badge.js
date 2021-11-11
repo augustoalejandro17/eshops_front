@@ -3,14 +3,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // @mui/material components
-import { makeStyles } from "@mui/styles";
 
 import styles from "assets/jss/material-kit-react/components/badgeStyle.js";
-
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function Badge(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { color, children } = props;
   return (
     <span className={classes.badge + " " + classes[color]}>{children}</span>

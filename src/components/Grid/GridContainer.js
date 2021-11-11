@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
+import useClasses from "components/UseClasses";
 
 const styles = {
   grid: {
@@ -14,10 +15,8 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
-
 export default function GridContainer(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { children, className, ...rest } = props;
   return (
     <Grid container {...rest} className={classes.grid + " " + className}>

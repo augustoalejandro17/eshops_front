@@ -5,11 +5,12 @@ import imagesStyle from "assets/jss/material-kit-react/imagesStyles.js";
 const profilePageStyle = {
   container,
   profile: {
-    textAlign: "center",
+    textAlign: "center !important",
     "& img": {
       maxWidth: "160px",
       width: "100%",
       margin: "0 auto",
+      // marginLeft: "500px",
       transform: "translate3d(0, -50%, 0)",
     },
   },

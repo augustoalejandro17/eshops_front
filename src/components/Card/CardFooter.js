@@ -10,10 +10,10 @@ import { makeStyles } from "@mui/styles";
 // core components
 import styles from "assets/jss/material-kit-react/components/cardFooterStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function CardFooter(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { className, children, ...rest } = props;
   const cardFooterClasses = classNames({
     [classes.cardFooter]: true,

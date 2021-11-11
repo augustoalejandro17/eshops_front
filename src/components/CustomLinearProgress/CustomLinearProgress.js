@@ -8,10 +8,10 @@ import LinearProgress from "@mui/material/LinearProgress";
 // core components
 import styles from "assets/jss/material-kit-react/components/customLinearProgressStyle.js";
 
-const useStyles = makeStyles(styles);
+import useClasses from "components/UseClasses";
 
 export default function CustomLinearProgress(props) {
-  const classes = useStyles();
+  const classes = useClasses(styles);
   const { color, ...rest } = props;
   return (
     <LinearProgress
