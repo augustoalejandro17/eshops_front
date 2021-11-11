@@ -8,6 +8,7 @@ import Messages from './views/Messages';
 import Profile from './views/Profile';
 import ShoppingCart from './views/ShoppingCart';
 import LoginScreen from './views/LoginScreen';
+import RegisterScreen from './views/RegisterScreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/shop/:shopIndex" element={<Shop/>}/>
                 <Route path="*" element={<NoMatch />} />
                 <Route path="/login" element={<LoginScreen />} />
+                <Route path="/singup" element={<RegisterScreen />} />
             </Route>
         </Routes>
     )
