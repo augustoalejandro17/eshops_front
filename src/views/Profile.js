@@ -12,6 +12,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import NavPills from "components/NavPills/NavPills.js";
 import Parallax from "components/Parallax/Parallax.js";
+import Grid from "@mui/material/Grid";
 
 import profile from "assets/img/faces/christian.jpg";
 
@@ -50,7 +51,10 @@ const Profile = (props) => {
         <div className={classNames(classes.main, classes.mainRaised)}>
          <div>
            <div className={classes.container}>
-             <GridContainer justify="center">
+             <GridContainer direction="column"
+                alignItems="center"
+                justifyContent="center" 
+                justify="center">
                <GridItem xs={12} sm={12} md={6}>
                  <div className={classes.profile}>
                    <div>
