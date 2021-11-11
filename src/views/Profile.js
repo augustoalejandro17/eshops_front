@@ -63,7 +63,7 @@ const Profile = (props) => {
                    <div className={classes.name}>
                      <h3 className={classes.title}>Christian Louboutin</h3>
                      <h6>DESIGNER</h6>
-                     <Button justIcon link className={classes.margin5}>
+                     {/* <Button justIcon link className={classes.margin5}>
                        <i className={"fab fa-twitter"} />
                      </Button>
                      <Button justIcon link className={classes.margin5}>
@@ -71,22 +71,28 @@ const Profile = (props) => {
                      </Button>
                      <Button justIcon link className={classes.margin5}>
                        <i className={"fab fa-facebook"} />
-                     </Button>
+                     </Button> */}
                    </div>
                  </div>
                </GridItem>
+               <GridItem xs={12} sm={12} md={6}>
+                <div className={classes.description}>
+                    <p>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                    when an unknown printer took a galley of type and scrambled it to make a type 
+                    specimen book. It has survived not only five centuries, but also the leap into 
+                    electronic typesetting, remaining essentially unchanged. It was popularised in 
+                    the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.{" "}
+                    </p>
+                </div>
+               </GridItem>
+               
              </GridContainer>
-             <div className={classes.description}>
-               <p>
-                 An artist of considerable range, Chet Faker — the name taken by
-                 Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-                 and records all of his own music, giving it a warm, intimate
-                 feel with a solid groove structure.{" "}
-               </p>
-             </div>
-             {/* <GridContainer justify="center">
+             
+             <GridContainer justify="center">
                <GridItem xs={12} sm={12} md={8} className={classes.navWrapper}>
-                 <NavPills
+                 {/* <NavPills
                    alignCenter
                    color="primary"
                    tabs={[
@@ -197,9 +203,9 @@ const Profile = (props) => {
                       ),
                     },
                   ]}
-                />
+                /> */}
               </GridItem>
-            </GridContainer> */}
+            </GridContainer>
           </div>
         </div>
       </div>
