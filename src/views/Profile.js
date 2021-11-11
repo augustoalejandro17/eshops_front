@@ -2,18 +2,14 @@ import * as React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
-import { makeStyles } from "@mui/styles";
 // @material-ui/icons
 import Camera from "@mui/icons-material/Camera";
 import Palette from "@mui/icons-material/Palette";
 import Favorite from "@mui/icons-material/Favorite";
 // core components
-import Header from "components/Header/Header.js";
-import Footer from "components/Footer/Footer.js";
 import Button from "components/CustomButtons/Button.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
 import NavPills from "components/NavPills/NavPills.js";
 import Parallax from "components/Parallax/Parallax.js";
 
@@ -84,7 +80,7 @@ const Profile = (props) => {
                  feel with a solid groove structure.{" "}
                </p>
              </div>
-             <GridContainer justify="center">
+             {/* <GridContainer justify="center">
                <GridItem xs={12} sm={12} md={8} className={classes.navWrapper}>
                  <NavPills
                    alignCenter
@@ -199,7 +195,7 @@ const Profile = (props) => {
                   ]}
                 />
               </GridItem>
-            </GridContainer>
+            </GridContainer> */}
           </div>
         </div>
       </div>

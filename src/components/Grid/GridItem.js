@@ -2,7 +2,6 @@ import React from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // @mui/material components
-import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import useClasses from "components/UseClasses";
 
