@@ -53,7 +53,7 @@ const LoginScreen = (props) => {
                     <CardHeader color="primary" className={classes.cardHeader}>
                       <h4>Login</h4>
                       <div className={classes.socialLine}>
-                        <Button
+                        {/* <Button
                           justIcon
                           href="#pablo"
                           target="_blank"
@@ -79,10 +79,9 @@ const LoginScreen = (props) => {
                           onClick={(e) => e.preventDefault()}
                         >
                           <i className={"fab fa-google-plus-g"} />
-                        </Button>
+                        </Button> */}
                       </div>
                     </CardHeader>
-                    <p className={classes.divider}>Or Be Classical</p>
                     <CardBody>
                       <CustomInput
                         labelText="First Name..."
