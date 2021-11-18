@@ -10,6 +10,7 @@ import ShoppingCart from './views/ShoppingCart';
 import LoginScreen from './views/LoginScreen';
 import RegisterScreen from './views/RegisterScreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Product from './views/Product';
 
 
 const theme = createTheme();
@@ -26,6 +27,7 @@ const App = () => {
                 <Route path="*" element={<NoMatch />} />
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<RegisterScreen />} />
+                <Route path="/product/:shopIndex" element={<Product />} />
             </Route>
         </Routes>
     )

@@ -69,7 +69,12 @@ const Shop = (props) => {
                         
                         </Typography>
                         <CardActions style={{display: "flex", justifyContent: "center"}}>
-                            <Button size="small" color="info">Ver producto</Button>
+                            <Link style={{ textDecoration: "none" }} 
+                                to={`/product/${card.index}`}
+                                key={card.index}
+                            >
+                                <Button size="small" color="info">Ver producto</Button>
+                            </Link>
                             <Button size="small" color="primary">Comprar producto</Button>
                         </CardActions>
                         </CardContent>
