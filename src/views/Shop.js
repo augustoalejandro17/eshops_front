@@ -25,14 +25,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import useClasses from "components/UseClasses";
 
 var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
-                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'},      
-                    {index: 3, title: 'Card Three', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 4, title: 'Card Four', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 5, title: 'Card Five', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 6, title: 'Card Six', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 7, title: 'Card Seven', description: 'This is a description', image: 'https://source.unsplash.com/random'},    
-                    {index: 8, title: 'Card Eight', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 9, title: 'Card Nine', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
+                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
 
 const Shop = (props) => {
     let params = useParams();
@@ -47,34 +40,46 @@ const Shop = (props) => {
 
     return( 
         <div>
-            <h2 style={{display: "flex", justifyContent: "center"}}>Shop {params.shopIndex}</h2>
         <Container sx={{ py: 8 }} maxWidth="lg">
+        <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>Shop {params.shopIndex}</h2>
+
             <Grid container spacing={4} 
-                direction="column"
+                direction="row"
                 justifyContent="center"
                 alignItems="center"
             >
             {cards.map((card) => (
-                <Grid item key={card.index} xs={12} sm={6} md={4}>  
+                <Grid item key={card.index} xs={12} sm={12} md={12}>  
                 
                     <Card
                     sx={{ height: '100%', display: 'flex' }}
                     >
                     
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', width: "100%" }}>
                         <CardMedia
                         component="img"
                         sx={{ width: "30%"}}
-                        image={profile}
+                        image={background}
                         alt="Live from space album cover"
                         />
-                        <CardContent sx={{ flex: '1 0 auto' }}>
+                        <CardContent>
                         <Typography component="div" variant="h5">
-                            Live From Space
+                            Product Name
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            Mac Miller
+                        <Typography variant="body2" color="text.secondary">
+                        <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pulvinar 
+                        vel nibh sit amet dignissim. Ut non vulputate purus. Etiam commodo tincidunt 
+                        placerat. Cras ut lacus scelerisque, posuere mauris eget, mollis felis. Praesent 
+                        volutpat congue lectus, sit amet gravida libero maximus sed. Mauris dui quam, 
+                        vehicula id tellus eget, ultricies malesuada erat. Praesent porta elit eu augue 
+                        accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
+                        eros.</p> 
+                        
                         </Typography>
+                        <CardActions style={{display: "flex", justifyContent: "center"}}>
+                            <Button size="small" color="info">Ver producto</Button>
+                            <Button size="small" color="primary">Comprar producto</Button>
+                        </CardActions>
                         </CardContent>
                     </Box>
                     </Card>
