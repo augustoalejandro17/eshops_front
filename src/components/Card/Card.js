@@ -3,9 +3,6 @@ import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
-// @mui/material components
-import { makeStyles } from "@mui/styles";
-// @mui/icons-material
 
 // core components
 import styles from "assets/jss/material-kit-react/components/cardStyle.js";

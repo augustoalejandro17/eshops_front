@@ -2,25 +2,17 @@ import * as React from 'react';
 import { useParams } from "react-router-dom";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-// @material-ui/core components
-// @material-ui/icons
-
-import Parallax from "components/Parallax/Parallax.js";
 
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import background from "assets/img/bg2.jpg";
 import profile from "assets/img/faces/christian.jpg";
-import { Container, Grid, CardMedia, CardContent, CardActions, Box, IconButton } from '@mui/material';
+import { Container, Grid, CardMedia, CardContent, CardActions, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
-import BackdropFilter from "react-backdrop-filter";
 import "views/styles.css";
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 import useClasses from "components/UseClasses";
 

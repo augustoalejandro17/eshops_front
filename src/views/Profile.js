@@ -3,29 +3,13 @@ import * as React from "react";
 import classNames from "classnames";
 // @material-ui/core components
 // @material-ui/icons
-import Camera from "@mui/icons-material/Camera";
-import Palette from "@mui/icons-material/Palette";
-import Favorite from "@mui/icons-material/Favorite";
-// core components
-import Button from "components/CustomButtons/Button.js";
+
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import NavPills from "components/NavPills/NavPills.js";
 import Parallax from "components/Parallax/Parallax.js";
-import Grid from "@mui/material/Grid";
 
 import profile from "assets/img/faces/christian.jpg";
 
-import studio1 from "assets/img/examples/studio-1.jpg";
-import studio2 from "assets/img/examples/studio-2.jpg";
-import studio3 from "assets/img/examples/studio-3.jpg";
-import studio4 from "assets/img/examples/studio-4.jpg";
-import studio5 from "assets/img/examples/studio-5.jpg";
-import work1 from "assets/img/examples/olu-eletu.jpg";
-import work2 from "assets/img/examples/clem-onojeghuo.jpg";
-import work3 from "assets/img/examples/cynthia-del-rio.jpg";
-import work4 from "assets/img/examples/mariya-georgieva.jpg";
-import work5 from "assets/img/examples/clem-onojegaw.jpg";
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
 
 import useClasses from "components/UseClasses";

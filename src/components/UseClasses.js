@@ -1,4 +1,3 @@
-import React from "react";
 import { useMemo } from 'react';
 import { css } from '@emotion/css';
 import { useTheme } from '@emotion/react';

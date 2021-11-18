@@ -6,9 +6,6 @@ import Icon from "@mui/material/Icon";
 import Email from "@mui/icons-material/Email";
 import People from "@mui/icons-material/People";
 // core components
-import Header from "components/Header/Header.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
-import Footer from "components/Footer/Footer.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
