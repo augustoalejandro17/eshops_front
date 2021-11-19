@@ -8,7 +8,7 @@ import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import background from "assets/img/bg2.jpg";
 import profile from "assets/img/faces/christian.jpg";
-import { Container, Grid, CardMedia, CardContent, CardActions, Box } from '@mui/material';
+import { Container, Grid, CardMedia, CardActions, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
 import "views/styles.css";
@@ -22,13 +22,6 @@ var cards = [{index: 1, title: 'Card One', description: 'This is a description',
 const Shop = (props) => {
     let params = useParams();
     const classes = useClasses(styles);
-	const { ...rest } = props;
-	const imageClasses = classNames(
-		classes.imgRaised,
-		classes.imgRoundedCircle,
-		classes.imgFluid
-	);
-  	const navImageClasses = classNames(classes.imgRounded, classes.imgGallery);
 
     return( 
         <div>
@@ -54,7 +47,7 @@ const Shop = (props) => {
                         image={background}
                         alt="Live from space album cover"
                         />
-                        <CardContent>
+                        <CardBody>
                         <Typography component="div" variant="h5">
                             Product Name
                         </Typography>
@@ -75,9 +68,9 @@ const Shop = (props) => {
                             >
                                 <Button size="small" color="info">Ver producto</Button>
                             </Link>
-                            <Button size="small" color="primary">Comprar producto</Button>
+                            <Button size="small" color="primary">Añadir al carrito</Button>
                         </CardActions>
-                        </CardContent>
+                        </CardBody>
                     </Box>
                     </Card>
                 </Grid>
