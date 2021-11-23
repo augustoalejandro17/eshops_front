@@ -16,7 +16,10 @@ import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
 import { useAuth } from "context/AuthContext"
-
+import {
+    useNavigate,
+    useLocation,
+  } from "react-router-dom";
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
@@ -26,9 +29,30 @@ const RegisterScreen = (props) => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const nameRef = useRef();
-    const { login } = useAuth();
+    const { signup } = useAuth();
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+    async function handleRegister(e) {
+        e.preventDefault()
 
-    // console.log( useAuth());
+        // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+        //     return setError("Passwords do not match")
+        // }
+
+        try {
+            setError("")
+            setLoading(true)
+            await signup(emailRef.current.value, passwordRef.current.value)
+            navigate(from, { replace: true });
+        } catch {
+            setError("Failed to create an account")
+        }
+
+        setLoading(false)
+    }
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
@@ -143,7 +167,7 @@ const RegisterScreen = (props) => {
                       />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                      <Button simple color="primary" size="lg">
+                      <Button simple color="primary" size="lg" onClick={handleRegister}>
                         Registrarse
                       </Button>
                     </CardFooter>
