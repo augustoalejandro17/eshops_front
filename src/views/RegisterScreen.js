@@ -15,17 +15,18 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
-import { AuthContext } from "context/AuthContext"
+import { useAuth } from "context/AuthContext"
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
 
 const RegisterScreen = (props) => {
+
     const emailRef = useRef();
     const passwordRef = useRef();
     const nameRef = useRef();
-    const { login } = useContext(AuthContext);
+    const { login } = useAuth();
 
     // console.log( useAuth());
 
