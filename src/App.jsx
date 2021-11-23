@@ -11,12 +11,14 @@ import LoginScreen from './views/LoginScreen';
 import RegisterScreen from './views/RegisterScreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Product from './views/Product';
+import { AuthProvider } from 'context/AuthContext';
 
 
 const theme = createTheme();
 
 const App = () => {
     return(
+      <AuthProvider>
         <Routes>
             <Route path="/" element={<DefaultHeader/>}>
                 <Route path="/" element={<Home/>}/>
@@ -30,6 +32,7 @@ const App = () => {
                 <Route path="/product/:shopIndex" element={<Product />} />
             </Route>
         </Routes>
+      </AuthProvider>
     )
 }
 

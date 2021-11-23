@@ -1,4 +1,4 @@
-import  React, { useRef, useState } from 'react';
+import  React, { useRef, useState, useContext } from 'react';
 // @mui/material components
 import InputAdornment from "@mui/material/InputAdornment";
 import Icon from "@mui/material/Icon";
@@ -15,7 +15,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
-import { useAuth } from "context/AuthContext"
+import { AuthContext } from "context/AuthContext"
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
@@ -25,7 +25,9 @@ const RegisterScreen = (props) => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const nameRef = useRef();
-    const { signup } = useAuth()
+    const { login } = useContext(AuthContext);
+
+    // console.log( useAuth());
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
