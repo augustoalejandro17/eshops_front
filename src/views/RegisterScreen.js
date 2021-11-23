@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React, { useRef, useState } from 'react';
 // @mui/material components
 import InputAdornment from "@mui/material/InputAdornment";
 import Icon from "@mui/material/Icon";
@@ -15,12 +15,18 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
+import { useAuth } from "context/AuthContext"
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
 
 const RegisterScreen = (props) => {
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const nameRef = useRef();
+    const { signup } = useAuth()
+
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
       setCardAnimation("");
@@ -89,6 +95,7 @@ const RegisterScreen = (props) => {
                         }}
                         inputProps={{
                           type: "text",
+                          inputRef: {nameRef},
                           endAdornment: (
                             <InputAdornment position="end">
                               <People className={classes.inputIconsColor} />
@@ -104,6 +111,7 @@ const RegisterScreen = (props) => {
                         }}
                         inputProps={{
                           type: "email",
+                          inputRef: {emailRef},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -119,6 +127,7 @@ const RegisterScreen = (props) => {
                         }}
                         inputProps={{
                           type: "password",
+                          inputRef: {passwordRef},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>
@@ -132,7 +141,7 @@ const RegisterScreen = (props) => {
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
                       <Button simple color="primary" size="lg">
-                        Get started
+                        Registrarse
                       </Button>
                     </CardFooter>
                   </form>
