@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React, { useState } from 'react';
 // @mui/material components
 import InputAdornment from "@mui/material/InputAdornment";
 import Icon from "@mui/material/Icon";
@@ -15,6 +15,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
+import { useAuth } from "context/AuthContext"
+import { auth } from "firebase.js"
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
@@ -22,6 +25,35 @@ import image from "assets/img/bg7.jpg";
 
 const LoginScreen = (props) => {
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [confirmPassword, setConfirmPassword] = useState();
+    const { login } = useAuth();
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+
+    async function handleLogin(e) {
+        e.preventDefault()
+        
+        // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+        //     return setError("Passwords do not match")
+        // }
+
+        try {
+            setError("")
+            setLoading(true)
+            await login(auth, email, password);
+            navigate(from, { replace: true });
+        } catch {
+            setError("Failed to login an account")
+        }
+
+        setLoading(false)
+    }
+
     setTimeout(function () {
       setCardAnimation("");
     }, 700);
@@ -50,51 +82,10 @@ const LoginScreen = (props) => {
                     <CardHeader color="primary" className={classes.cardHeader}>
                       <h4>Login</h4>
                       <div className={classes.socialLine}>
-                        {/* <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-twitter"} />
-                        </Button>
-                        <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-facebook"} />
-                        </Button>
-                        <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-google-plus-g"} />
-                        </Button> */}
+        
                       </div>
                     </CardHeader>
                     <CardBody>
-                      <CustomInput
-                        labelText="First Name..."
-                        id="first"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          type: "text",
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <People className={classes.inputIconsColor} />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
                       <CustomInput
                         labelText="Email..."
                         id="email"
@@ -103,6 +94,7 @@ const LoginScreen = (props) => {
                         }}
                         inputProps={{
                           type: "email",
+                          onChange: (userEmail) => setEmail(userEmail.target.value),
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -118,6 +110,7 @@ const LoginScreen = (props) => {
                         }}
                         inputProps={{
                           type: "password",
+                          onChange: (userPassword) => setPassword(userPassword.target.value),
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>
@@ -130,8 +123,8 @@ const LoginScreen = (props) => {
                       />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                      <Button simple color="primary" size="lg">
-                        Get started
+                      <Button simple color="primary" size="lg" onClick={handleLogin}>
+                        Iniciar Sesión
                       </Button>
                     </CardFooter>
                   </form>

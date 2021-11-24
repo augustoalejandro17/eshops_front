@@ -30,15 +30,23 @@ export function AuthProvider({ children }) {
         } catch (error) {
           console.log(error.message);
         }
-      };
+    };
 
-    // function login(email, password) {
-    //     return auth.signInWithEmailAndPassword(email, password)
-    // }
+    const login = async (auth, email, password) => {
+        try {
+          const user = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+        } catch (error) {
+          console.log(error.message);
+        }
+    };
 
-    // function logout() {
-    //     return auth.signOut()
-    // }
+    const logout = async (auth) => {
+        await signOut(auth);
+    };
 
     // function resetPassword(email) {
     //     return auth.sendPasswordResetEmail(email)
@@ -67,8 +75,8 @@ export function AuthProvider({ children }) {
     const value = {
         currentUser,
         signup,
-        // login,
-        // logout,
+        login,
+        logout,
         // resetPassword,
         // updateEmail,
         // updatePassword

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,59 +19,17 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
+import { useAuth } from "context/AuthContext"
+import { auth } from "firebase.js"
 
 const theme = createTheme();
-// const Search = styled('div')(({ theme }) => ({
-//     position: 'relative',
-//     borderRadius: theme.shape.borderRadius,
-//     backgroundColor: alpha(theme.palette.common.white, 0.15),
-//     '&:hover': {
-//       backgroundColor: alpha(theme.palette.common.white, 0.25),
-//     },
-//     marginRight: theme.spacing(2),
-//     marginLeft: 0,
-//     width: '100%',
-//     [theme.breakpoints.up('sm')]: {
-//       marginLeft: theme.spacing(3),
-//       width: 'auto',
-//     },
-// }));
-
-// const SearchIconWrapper = styled('div')(({ theme }) => ({
-//     padding: theme.spacing(0, 2),
-//     height: '100%',
-//     position: 'absolute',
-//     pointerEvents: 'none',
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-// }));
-
-// const StyledInputBase = styled(InputBase)(({ theme }) => ({
-//     color: 'inherit',
-//     '& .MuiInputBase-input': {
-//         padding: theme.spacing(1, 1, 1, 0),
-//         // vertical padding + font size from searchIcon
-//         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//         transition: theme.transitions.create('width'),
-//         width: '100%',
-//         [theme.breakpoints.up('md')]: {
-//         width: '20ch',
-//         outline: '1px solid black',
-//         borderRadius: '25px'
-//         },
-//     },
-// }));
 
 function ScrollTop(props) {
     const { children, window } = props;
-    // Note that you normally won't need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
+
     const trigger = useScrollTrigger({
         target: window ? window() : undefined,
         disableHysteresis: true,
@@ -114,6 +72,27 @@ const DefaultAppBar = (props) => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const { logout } = useAuth();
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+
+    async function handleLogout(e) {
+        e.preventDefault()
+        try {
+            setError("")
+            setLoading(true)
+            await logout(auth);
+            navigate(from, { replace: true });
+        } catch {
+            setError("Failed to create an account")
+        }
+
+        setLoading(false)
+    }
 
     const handleProfileMenuOpen = (event) => {
       setAnchorEl(event.currentTarget);
@@ -151,8 +130,11 @@ const DefaultAppBar = (props) => {
       >
         <MenuItem onClick={handleMenuClose}>
             <NavLink style={{ textDecoration: "none", color: "black" }} 
-                to={`/profile`}>  Profile
+                to={`/profile`}>  Perfil
             </NavLink>
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+            Cerrar Sesión
         </MenuItem>
         {/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
       </Menu>

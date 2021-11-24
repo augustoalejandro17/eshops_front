@@ -1,7 +1,6 @@
-import  React, { useRef, useState } from 'react';
+import  React, { useState } from 'react';
 // @mui/material components
 import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
 import Icon from "@mui/material/Icon";
 // @mui/icons-material
 import Email from "@mui/icons-material/Email";
@@ -24,6 +23,8 @@ import {
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 import { auth } from "firebase.js"
 import image from "assets/img/bg7.jpg";
+import Muted from "components/Typography/Muted.js";
+import { Link, NavLink } from 'react-router-dom';
 
 const RegisterScreen = (props) => {
 
@@ -38,6 +39,7 @@ const RegisterScreen = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
+
     async function handleRegister(e) {
         e.preventDefault()
         
@@ -86,33 +88,6 @@ const RegisterScreen = (props) => {
                     <CardHeader color="info" className={classes.cardHeader}>
                       <h4>Register</h4>
                       <div className={classes.socialLine}>
-                        {/* <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-twitter"} />
-                        </Button>
-                        <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-facebook"} />
-                        </Button>
-                        <Button
-                          justIcon
-                          href="#pablo"
-                          target="_blank"
-                          color="transparent"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className={"fab fa-google-plus-g"} />
-                        </Button> */}
                       </div>
                     </CardHeader>
                     {/* <p className={classes.divider}>Or Be Classical</p> */}
@@ -171,9 +146,25 @@ const RegisterScreen = (props) => {
                       />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                      <Button simple color="primary" size="lg" onClick={handleRegister}>
-                        Registrarse
-                      </Button>
+                        <GridContainer justify="center"
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center" 
+                            justify="center"
+                        >
+                        <Button simple color="primary" size="lg" onClick={handleRegister}>
+                            Registrarse
+                        </Button>
+                        <Muted>
+                            or  
+                            <Button simple color="primary" size="lg">
+                                <NavLink style={{ textDecoration: "none", color: "gray" }} to={`/login`}>  
+                                    login
+                                </NavLink>
+                            </Button>
+                        </Muted>
+                        
+                        </GridContainer>
                     </CardFooter>
                   </form>
                 </Card>
