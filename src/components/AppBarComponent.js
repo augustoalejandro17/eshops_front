@@ -258,19 +258,7 @@ const DefaultAppBar = (props) => {
                   <NotificationsIcon />
                 </Badge>
               </IconButton> */}
-                <IconButton
-                    style={{ color: 'black' }}
-                    size="large"
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <Link style={{ textDecoration: "none" }} 
+              <Link style={{ textDecoration: "none" }} 
                     to={`/cart`}
                 > 
                     <IconButton
@@ -285,6 +273,19 @@ const DefaultAppBar = (props) => {
                         <ShoppingCartIcon />
                     </IconButton>
                 </Link>
+                <IconButton
+                    style={{ color: 'black' }}
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton

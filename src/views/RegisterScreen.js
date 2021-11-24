@@ -1,6 +1,7 @@
-import  React, { useRef, useState, useContext } from 'react';
+import  React, { useRef, useState } from 'react';
 // @mui/material components
 import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
 import Icon from "@mui/material/Icon";
 // @mui/icons-material
 import Email from "@mui/icons-material/Email";
@@ -21,14 +22,16 @@ import {
     useLocation,
   } from "react-router-dom";
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
-
+import { auth } from "firebase.js"
 import image from "assets/img/bg7.jpg";
 
 const RegisterScreen = (props) => {
 
-    const emailRef = useRef();
-    const passwordRef = useRef();
-    const nameRef = useRef();
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [confirmPassword, setConfirmPassword] = useState();
+
     const { signup } = useAuth();
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
@@ -37,7 +40,7 @@ const RegisterScreen = (props) => {
     const from = location.state?.from?.pathname || "/";
     async function handleRegister(e) {
         e.preventDefault()
-
+        
         // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
         //     return setError("Passwords do not match")
         // }
@@ -45,7 +48,7 @@ const RegisterScreen = (props) => {
         try {
             setError("")
             setLoading(true)
-            await signup(emailRef.current.value, passwordRef.current.value)
+            await signup(auth, email, password);
             navigate(from, { replace: true });
         } catch {
             setError("Failed to create an account")
@@ -120,9 +123,10 @@ const RegisterScreen = (props) => {
                         formControlProps={{
                           fullWidth: true,
                         }}
+                        
                         inputProps={{
                           type: "text",
-                          inputRef: {nameRef},
+                          onChange: (userName) => setName(userName.target.value),
                           endAdornment: (
                             <InputAdornment position="end">
                               <People className={classes.inputIconsColor} />
@@ -138,7 +142,7 @@ const RegisterScreen = (props) => {
                         }}
                         inputProps={{
                           type: "email",
-                          inputRef: {emailRef},
+                          onChange: (userEmail) => setEmail(userEmail.target.value),
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -154,7 +158,7 @@ const RegisterScreen = (props) => {
                         }}
                         inputProps={{
                           type: "password",
-                          inputRef: {passwordRef},
+                          onChange: (userPassword) => setPassword(userPassword.target.value),
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>
