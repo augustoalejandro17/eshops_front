@@ -50,7 +50,7 @@ const RegisterScreen = (props) => {
         try {
             setError("")
             setLoading(true)
-            await signup(auth, email, password);
+            await signup(auth, name, email, password);
             navigate(from, { replace: true });
         } catch {
             setError("Failed to create an account")
