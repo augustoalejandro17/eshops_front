@@ -1,9 +1,8 @@
 import * as React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-// @material-ui/core components
-// @material-ui/icons
 
+import Button from "components/CustomButtons/Button.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Parallax from "components/Parallax/Parallax.js";
@@ -13,6 +12,8 @@ import profile from "assets/img/faces/christian.jpg";
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
 
 import useClasses from "components/UseClasses";
+import SectionCarousel from "../components/SectionCarousel";
+import BasicCarousel from "../components/BasicCarousel";
 
 const Profile = (props) => {
   
@@ -46,18 +47,21 @@ const Profile = (props) => {
                    </div>
                    <div className={classes.name}>
                      <h3 className={classes.title}>Christian Louboutin</h3>
-                     <h6>DESIGNER</h6>
-                     {/* <Button justIcon link className={classes.margin5}>
-                       <i className={"fab fa-twitter"} />
-                     </Button>
-                     <Button justIcon link className={classes.margin5}>
-                       <i className={"fab fa-instagram"} />
-                     </Button>
-                     <Button justIcon link className={classes.margin5}>
-                       <i className={"fab fa-facebook"} />
-                     </Button> */}
                    </div>
                  </div>
+               </GridItem>
+               <GridItem xs={12} sm={12} md={6}>
+				<GridContainer direction="row"
+								alignItems="center"
+								justifyContent="center" 
+								justify="center">
+					<Button simple color="primary" size="lg" >
+						Crear Tienda
+					</Button>
+					<Button simple color="primary" size="lg" >
+						Editar Perfil
+					</Button>
+				</GridContainer>
                </GridItem>
                <GridItem xs={12} sm={12} md={6}>
                 <div className={classes.description}>
@@ -71,9 +75,12 @@ const Profile = (props) => {
                     </p>
                 </div>
                </GridItem>
-               
+               <GridItem xs={12} sm={12} md={6}>
+                <SectionCarousel/>
+	  			{/* <BasicCarousel/> */}
+				
+               </GridItem>
              </GridContainer>
-             
              <GridContainer justify="center">
                <GridItem xs={12} sm={12} md={8} className={classes.navWrapper}>
                  {/* <NavPills
@@ -190,7 +197,10 @@ const Profile = (props) => {
                 /> */}
               </GridItem>
             </GridContainer>
+			
+
           </div>
+		  
         </div>
       </div>
     </div>
