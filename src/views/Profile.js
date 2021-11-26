@@ -7,6 +7,7 @@ import Button from "components/CustomButtons/Button.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Parallax from "components/Parallax/Parallax.js";
+import { Link } from 'react-router-dom';
 
 import profile from "assets/img/faces/christian.jpg";
 
@@ -15,7 +16,14 @@ import styles from "assets/jss/material-kit-react/views/profilePage.js";
 import useClasses from "components/UseClasses";
 import SectionCarousel from "../components/SectionCarousel";
 import BasicCarousel from "../components/BasicCarousel";
-
+import { 
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Grid,
+    Container,
+    Typography } from '@mui/material';
 const Profile = (props) => {
   
 	const classes = useClasses(styles);
@@ -40,8 +48,10 @@ const Profile = (props) => {
              <GridContainer direction="column"
                 alignItems="center"
                 justifyContent="center" 
-                justify="center">
-               <GridItem xs={12} sm={12} md={6}>
+                justify="center"
+				style={{marginBottom: "30px"}}
+			>	
+                <GridItem xs={12} sm={12} md={6}>
                  <div className={classes.profile}>
                    <div>
                      <img src={profile} alt="..." className={imageClasses} />
@@ -56,12 +66,18 @@ const Profile = (props) => {
 								alignItems="center"
 								justifyContent="center" 
 								justify="center">
+					<Link style={{ textDecoration: "none" }} 
+                            to={`/edit-profile/1`}
+                            // key={card.index}
+                        >
+                            <Button simple color="primary" size="lg" >
+								Editar Perfil
+							</Button>
+					</Link>
 					<Button simple color="primary" size="lg" >
 						Crear Tienda
 					</Button>
-					<Button simple color="primary" size="lg" >
-						Editar Perfil
-					</Button>
+					
 				</GridContainer>
                </GridItem>
                <GridItem xs={12} sm={12} md={6}>
@@ -75,18 +91,19 @@ const Profile = (props) => {
                     the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.{" "}
                     </p>
                 </div>
-               </GridItem>
-               <GridItem xs={12} sm={12} md={6}>
-                {/* <SectionCarousel/> */}
-	  			<BasicCarousel/>
-				
-               </GridItem>
+                </GridItem>
+				<GridItem xs={12} sm={12} md={6}>
+					<GridContainer direction="row"
+									alignItems="center"
+									justifyContent="center" 
+									justify="center">
+						<Button simple color="primary" size="lg" style={{justifyContent: "center"}}>
+							Ver Tiendas
+						</Button>
+					</GridContainer>
+				</GridItem>
              </GridContainer>
-             
-			
-
           </div>
-		  
         </div>
       </div>
     </div>

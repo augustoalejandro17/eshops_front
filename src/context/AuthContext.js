@@ -74,19 +74,19 @@ export function AuthProvider({ children }) {
     // function updatePassword(password) {
     //     return currentUser.updatePassword(password)
     // }
-    // onAuthStateChanged(auth, (currentUser) => {
-    //             setCurrentUser(currentUser)
-    //             setLoading(false)
-    //           });
-    useEffect(() => {
-        // const unsubscribe = 
-        onAuthStateChanged(auth, (currentUser) => {
-            setCurrentUser(currentUser)
-            setLoading(false)
-          });
+    onAuthStateChanged(auth, (currentUser) => {
+                setCurrentUser(currentUser)
+                setLoading(false)
+              });
+    // useEffect(() => {
+    //     const unsubscribe = 
+    //     onAuthStateChanged(auth, (currentUser) => {
+    //         setCurrentUser(currentUser)
+    //         setLoading(false)
+    //       });
 
-        // return unsubscribe
-    }, [])
+    //     return unsubscribe
+    // }, [])
     
     const value = {
         currentUser,

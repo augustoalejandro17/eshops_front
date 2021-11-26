@@ -10,6 +10,7 @@ import ShoppingCart from 'views/ShoppingCart';
 import Product from 'views/Product';
 import NoMatch from 'views/NoMatch';
 import Carousel from '../views/Carousel';
+import EditProfile from 'views/EditProfile';
 
 function AppStack() {
     return (
@@ -17,8 +18,8 @@ function AppStack() {
             <Route path="/" element={<DefaultHeader/>}>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/messages" element={<Messages/>}/>
-                <Route path="/carousel" element={<Carousel/>}/>
                 <Route path="/profile" element={<Profile/>}/>
+                <Route path="/edit-profile/:profileIndex" element={<EditProfile/>}/>
                 <Route path="/cart" element={<ShoppingCart/>}/>
                 <Route path="/shop/:shopIndex" element={<Shop/>}/>
                 <Route path="*" element={<NoMatch />} />
