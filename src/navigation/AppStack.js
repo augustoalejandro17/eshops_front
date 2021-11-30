@@ -13,6 +13,8 @@ import Carousel from '../views/Carousel';
 import EditProfile from 'views/EditProfile';
 import AddShop from 'views/AddShop';
 import AddProduct from 'views/AddProduct';
+import MyOrders from 'views/MyOrders';
+import ApproveOrders from 'views/ApproveOrders';
 
 function AppStack() {
     return (
@@ -27,6 +29,8 @@ function AppStack() {
                 <Route path="/product/:shopIndex" element={<Product />} />
                 <Route path="/add-shop" element={<AddShop />} />
                 <Route path="/add-product" element={<AddProduct/>}/>
+                <Route path="/my-orders" element={<MyOrders/>}/>
+                <Route path="/approve-orders" element={<ApproveOrders/>}/>
                 <Route path="*" element={<NoMatch />} />
             </Route> 
         </Routes>

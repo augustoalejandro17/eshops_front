@@ -75,7 +75,7 @@ const Profile = (props) => {
 							</Button>
 					</Link>
                     <Link style={{ textDecoration: "none" }} 
-                            to={`/create-shop`}
+                            to={`/add-shop`}
                             // key={card.index}
                     >
                         <Button simple color="primary" size="lg" >
