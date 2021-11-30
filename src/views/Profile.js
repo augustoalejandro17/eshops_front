@@ -74,9 +74,15 @@ const Profile = (props) => {
 								Editar Perfil
 							</Button>
 					</Link>
-					<Button simple color="primary" size="lg" >
-						Crear Tienda
-					</Button>
+                    <Link style={{ textDecoration: "none" }} 
+                            to={`/create-shop`}
+                            // key={card.index}
+                    >
+                        <Button simple color="primary" size="lg" >
+						    Crear Tienda
+					    </Button>
+					</Link>
+					
 					
 				</GridContainer>
                </GridItem>
@@ -97,9 +103,16 @@ const Profile = (props) => {
 									alignItems="center"
 									justifyContent="center" 
 									justify="center">
-						<Button simple color="primary" size="lg" style={{justifyContent: "center"}}>
-							Ver Tiendas
-						</Button>
+                        <Link style={{ textDecoration: "none" }} 
+                            to={`/`}
+                            // key={card.index}
+                        >
+                            <Button simple color="primary" size="lg" style={{justifyContent: "center"}}>
+                                Ver Tiendas
+                            </Button>
+
+                        </Link>
+							
 					</GridContainer>
 				</GridItem>
              </GridContainer>
