@@ -1,21 +1,27 @@
-import * as React from 'react';
-
+import React, {useEffect, useState} from 'react';
+import { collection, query, where, getDocs } from "firebase/firestore";
 import CardComponent from './../components/CardComponent';
-
-var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
-                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'},      
-                    {index: 3, title: 'Card Three', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 4, title: 'Card Four', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 5, title: 'Card Five', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 6, title: 'Card Six', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 7, title: 'Card Seven', description: 'This is a description', image: 'https://source.unsplash.com/random'},    
-                    {index: 8, title: 'Card Eight', description: 'This is a description', image: 'https://source.unsplash.com/random'},
-                    {index: 9, title: 'Card Nine', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
+import { db } from "../firebase.js"
 
 const Home = () => {
+    const [cards, setCards] = useState();
+    useEffect(() => {
+        const queryVar = query(collection(db, "stores"));
+        getDocs(queryVar).then((querySnapshot) => {
+            const list = [];
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
+                list.push(object);
+                // console.log(doc.id, " => ", doc.data());
+            });
+            setCards(list);
+            
+          });
+    },[])
     return (
         <main>
-            <CardComponent cards={cards}/>
+            {cards ? <CardComponent cards={cards}/> : null}            
         </main>
     );
 }

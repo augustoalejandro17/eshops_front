@@ -29,7 +29,7 @@ const CardComponent = ({cards}) => {
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
                         <Typography gutterBottom variant="h5" component="h2">
-                        {card.title}
+                        {card.name}
                         </Typography>
                         <Typography>
                         {card.description}
