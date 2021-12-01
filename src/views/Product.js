@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useParams } from "react-router-dom";
 // nodejs library that concatenates classes
 import classNames from "classnames";
@@ -22,6 +22,9 @@ import DialogContent from "@mui/material/DialogContent";
 import Close from "@mui/icons-material/Close";
 
 import useClasses from "components/UseClasses";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase.js"
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
@@ -34,6 +37,22 @@ const Product = (props) => {
     const classes = useClasses(styles);
     const [smallModal, setSmallModal] = React.useState(false);
     const [largeModal, setLargeModal] = React.useState(false);
+    const [cards2, setCards] = useState();
+    useEffect(() => {
+        const queryVar = query(collection(db, "stores"));
+        getDocs(queryVar).then((querySnapshot) => {
+            const list = [];
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
+                list.push(object);
+                // console.log(doc.id, " => ", doc.data());
+            });
+            setCards(list);
+            
+          });
+    },[])
+
     return (
     <div>
         <Container sx={{ py: 8 }} maxWidth="lg">
