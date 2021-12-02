@@ -17,7 +17,7 @@ const Home = () => {
             });
             setCards(list);
             
-          });
+        });
     },[])
     return (
         <main>

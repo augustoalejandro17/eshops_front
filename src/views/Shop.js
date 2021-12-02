@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useParams } from "react-router-dom";
 // nodejs library that concatenates classes
 import classNames from "classnames";
@@ -6,26 +6,41 @@ import classNames from "classnames";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
-import background from "assets/img/bg2.jpg";
-import profile from "assets/img/faces/christian.jpg";
+
 import { Container, Grid, CardMedia, CardActions, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
 import "views/styles.css";
 import Typography from '@mui/material/Typography';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase.js"
 
 import useClasses from "components/UseClasses";
 
-var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
-                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
-
 const Shop = (props) => {
-    let params = useParams();
+    const params = useParams();
     const classes = useClasses(styles);
+    const [cards, setCards] = useState();
+    
+    useEffect(() => {
+        const index = params.shopIndex;
+        const queryVar = query(collection(db, "products"), where("storeOwner", "==", index));
+        getDocs(queryVar).then((querySnapshot) => {
+            const list = [];
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
+                list.push(object);
+                // console.log(doc.id, " => ", doc.data());
+            });
+            setCards(list);
+            
+        });
+    },[params])
 
     return( 
         <div>
-        <Container sx={{ py: 8 }} maxWidth="lg">
+        {cards ? <Container sx={{ py: 8 }} maxWidth="lg">
         <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>Shop {params.shopIndex}</h2>
 
             <Grid container spacing={4} 
@@ -44,21 +59,15 @@ const Shop = (props) => {
                         <CardMedia
                         component="img"
                         sx={{ width: "30%"}}
-                        image={background}
+                        image={card.image}
                         alt="Live from space album cover"
                         />
                         <CardBody>
                         <Typography component="div" variant="h5">
-                            Product Name
+                            {card.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                        <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pulvinar 
-                        vel nibh sit amet dignissim. Ut non vulputate purus. Etiam commodo tincidunt 
-                        placerat. Cras ut lacus scelerisque, posuere mauris eget, mollis felis. Praesent 
-                        volutpat congue lectus, sit amet gravida libero maximus sed. Mauris dui quam, 
-                        vehicula id tellus eget, ultricies malesuada erat. Praesent porta elit eu augue 
-                        accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
-                        eros.</p> 
+                        <p><b>Description:</b> {card.description} </p> 
                         
                         </Typography>
                         <CardActions style={{display: "flex", justifyContent: "center"}}>
@@ -76,7 +85,7 @@ const Shop = (props) => {
                 </Grid>
             ))}
           </Grid>
-        </Container>
+        </Container> : <div>Loading...</div>}
          </div>
          
     );

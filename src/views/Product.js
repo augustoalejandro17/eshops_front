@@ -29,17 +29,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-var cards = [{index: 1, title: 'Card One', description: 'This is a description', image: 'https://source.unsplash.com/random'}, 
-                    {index: 2, title: 'Card Two', description: 'This is a description', image: 'https://source.unsplash.com/random'}];
-
 const Product = (props) => {
     let params = useParams();
     const classes = useClasses(styles);
     const [smallModal, setSmallModal] = React.useState(false);
     const [largeModal, setLargeModal] = React.useState(false);
-    const [cards2, setCards] = useState();
+    const [cards, setCards] = useState();
+
     useEffect(() => {
-        const queryVar = query(collection(db, "stores"));
+        const queryVar = query(collection(db, "content"), where("productOwner", "==", params.productIndex));
         getDocs(queryVar).then((querySnapshot) => {
             const list = [];
             querySnapshot.forEach((doc) => {
@@ -49,14 +47,14 @@ const Product = (props) => {
                 // console.log(doc.id, " => ", doc.data());
             });
             setCards(list);
-            
+            console.log(params.productIndex);
           });
-    },[])
+    },[params])
 
     return (
     <div>
-        <Container sx={{ py: 8 }} maxWidth="lg">
-        <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>Shop {params.shopIndex}</h2>
+        {cards ? <Container sx={{ py: 8 }} maxWidth="lg">
+        <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>Product {params.productIndex}</h2>
 
             <Grid container spacing={4} 
                 direction="row"
@@ -68,29 +66,21 @@ const Product = (props) => {
                     <Card
                     sx={{ height: '100%', display: 'flex' }}
                     >
-                     
-                    
                     <Box sx={{ display: 'flex', flexDirection: 'row', width: "100%" }}>
                         {/* <CardActionArea> */}
                         <CardMedia
                         component="img"
                         sx={{ width: "30%"}}
-                        image={background}
+                        image={card.image}
                         alt="Live from space album cover"
                         />
                         {/* </CardActionArea> */}
                         <CardBody>
                             <Typography component="div" variant="h5">
-                                Product Name
+                                {card.name}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                            <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pulvinar 
-                            vel nibh sit amet dignissim. Ut non vulputate purus. Etiam commodo tincidunt 
-                            placerat. Cras ut lacus scelerisque, posuere mauris eget, mollis felis. Praesent 
-                            volutpat congue lectus, sit amet gravida libero maximus sed. Mauris dui quam, 
-                            vehicula id tellus eget, ultricies malesuada erat. Praesent porta elit eu augue 
-                            accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
-                            eros.</p> 
+                            <p><b>Description:</b> {card.description} </p> 
                             
                             </Typography>
                         <CardActions style={{display: "flex", justifyContent: "center"}}>
@@ -104,7 +94,7 @@ const Product = (props) => {
                 </Grid>
             ))}
           </Grid>
-        </Container>
+        </Container> : <div>Loading...</div>}
         <Dialog
         classes={{
           root: classes.modalRoot,
@@ -146,7 +136,7 @@ const Product = (props) => {
                             accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
                             eros. </p>
         </DialogContent>
-      </Dialog>
+        </Dialog>
          </div>
   );
 };  

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react"
 import { auth } from "../firebase.js"
 import { db } from "../firebase.js"
-import { addDoc, collection } from "firebase/firestore"; 
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 
 import {
     createUserWithEmailAndPassword,
@@ -18,6 +18,8 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState()
+    const [userRef, setUserRef] = useState()
+    const [userPermissionsRef, setUuserPermissionsRef] = useState()
     const [loading, setLoading] = useState(true)
 
     // function signup(email, password) {
@@ -35,7 +37,7 @@ export function AuthProvider({ children }) {
             addDoc(collection(db, "users"), {
                 name: userName,
                 email: userEmail,
-            })
+            }).then((docRef) => { setUserRef(docRef.id); })
             //ensure we catch any errors at this stage to advise us if something does go wrong
             .catch(error => {
                 console.log('Something went wrong with added user to firestore: ', error);
@@ -53,7 +55,16 @@ export function AuthProvider({ children }) {
             auth,
             email,
             password
-          );
+          ).then( () => {
+            const queryVar = query(collection(db, "users"), where("email", "==", email));
+            getDocs(queryVar).then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    setUserRef(doc.id);
+                    setUuserPermissionsRef(doc.data().permissions);
+                });
+              
+            });
+          });
         } catch (error) {
           console.log(error.message);
         }

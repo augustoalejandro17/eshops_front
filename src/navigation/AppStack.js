@@ -26,7 +26,7 @@ function AppStack() {
                 <Route path="/edit-profile/:profileIndex" element={<EditProfile/>}/>
                 <Route path="/cart" element={<ShoppingCart/>}/>
                 <Route path="/shop/:shopIndex" element={<Shop/>}/>
-                <Route path="/product/:shopIndex" element={<Product />} />
+                <Route path="/product/:productIndex" element={<Product />} />
                 <Route path="/add-shop" element={<AddShop />} />
                 <Route path="/add-product" element={<AddProduct/>}/>
                 <Route path="/my-orders" element={<MyOrders/>}/>
