@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import { Button, Paper, Typography } from "@mui/material";
 // import { FormProvider, useForm } from "react-hook-form";
@@ -10,8 +10,17 @@ import TextField from "@mui/material/TextField";
 
 
 const AddShop = () => {
+    const [file, setFile] = useState(null);
+    const [shopName, setShopName] = useState(null);
+    const [shopDescription, setShopDescription] = useState(null);
+
     const { handleSubmit, reset, control, setValue, watch, register } = useForm();
-    const onSubmit = data => console.log(data.attachments[0]);
+    const onSubmit = data => {
+        setFile(data.attachments[0]);
+        setShopName(data.shopName);
+        setShopDescription(data.shopDescription);
+        console.log(file, shopName, shopDescription);
+    };
 
     return (
         <Paper
@@ -24,9 +33,9 @@ const AddShop = () => {
         >
         <Typography variant="h6"> Tienda Nueva</Typography>
 
-        <FormInputText name="textValue" control={control} label="Nombre de la Tienda" type="text" />
+        <FormInputText name="shopName" control={control} label="Nombre de la Tienda" type="text" />
         
-        <FormInputText name="descriptionValue" control={control} label="Descripción" type="text"/>
+        <FormInputText name="shopDescription" control={control} label="Descripción" type="text"/>
 
         <FormInputFile name="FileValue" control={control} label="File" />
 

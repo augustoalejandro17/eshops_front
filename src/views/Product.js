@@ -6,8 +6,6 @@ import classNames from "classnames";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
-import background from "assets/img/bg2.jpg";
-import profile from "assets/img/faces/christian.jpg";
 import { Container, Grid, CardMedia, CardActions, Box, CardActionArea } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/componentsSections/javascriptStyles.js";
