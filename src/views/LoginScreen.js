@@ -28,7 +28,7 @@ const LoginScreen = (props) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
-    const { login } = useAuth();
+    const { login, userRef, currentUser } = useAuth();
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
@@ -45,8 +45,11 @@ const LoginScreen = (props) => {
         try {
             setError("")
             setLoading(true)
-            await login(auth, email, password);
-            navigate(from, { replace: true });
+            await login(auth, email, password).then(() => {
+              // console.log(currentUser);
+            }
+            );
+            navigate(from, { replace: true })
         } catch {
             setError("Failed to login an account")
         }

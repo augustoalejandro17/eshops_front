@@ -55,16 +55,7 @@ export function AuthProvider({ children }) {
             auth,
             email,
             password
-          ).then( () => {
-            const queryVar = query(collection(db, "users"), where("email", "==", email));
-            getDocs(queryVar).then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    setUserRef(doc.id);
-                    setUuserPermissionsRef(doc.data().permissions);
-                });
-              
-            });
-          });
+          );
         } catch (error) {
           console.log(error.message);
         }
@@ -88,7 +79,18 @@ export function AuthProvider({ children }) {
     onAuthStateChanged(auth, (currentUser) => {
                 setCurrentUser(currentUser)
                 setLoading(false)
-              });
+                if(currentUser) {
+                    const queryVar = query(collection(db, "users"), where("email", "==", currentUser.email));
+                    getDocs(queryVar).then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            setUserRef(doc.id);
+                            setUuserPermissionsRef(doc.data().permissions);
+                        });
+                    
+                    });
+                }
+                
+            });
     // useEffect(() => {
     //     const unsubscribe = 
     //     onAuthStateChanged(auth, (currentUser) => {
