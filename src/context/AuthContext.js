@@ -17,9 +17,9 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [currentUser, setCurrentUser] = useState()
-    const [userRef, setUserRef] = useState()
-    const [userPermissionsRef, setUuserPermissionsRef] = useState()
+    const [currentUser, setCurrentUser] = useState(null)
+    const [userRef, setUserRef] = useState(null)
+    const [userPermissionsRef, setUuserPermissionsRef] = useState(null)
     const [loading, setLoading] = useState(true)
 
     // function signup(email, password) {
@@ -79,18 +79,19 @@ export function AuthProvider({ children }) {
     onAuthStateChanged(auth, (currentUser) => {
                 setCurrentUser(currentUser)
                 setLoading(false)
-                if(currentUser) {
-                    const queryVar = query(collection(db, "users"), where("email", "==", currentUser.email));
-                    getDocs(queryVar).then((querySnapshot) => {
-                        querySnapshot.forEach((doc) => {
-                            setUserRef(doc.id);
-                            setUuserPermissionsRef(doc.data().permissions);
-                        });
-                    
-                    });
-                }
-                
             });
+
+    useEffect(() => {
+        if(currentUser) {
+            const queryVar = query(collection(db, "users"), where("email", "==", currentUser.email));
+            getDocs(queryVar).then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    setUserRef(doc.id);
+                    setUuserPermissionsRef(doc.data().permissions);
+                });    
+            });
+        }
+    }, [currentUser])
     // useEffect(() => {
     //     const unsubscribe = 
     //     onAuthStateChanged(auth, (currentUser) => {
@@ -103,6 +104,8 @@ export function AuthProvider({ children }) {
     
     const value = {
         currentUser,
+        userRef,
+        userPermissionsRef,
         signup,
         login,
         logout,

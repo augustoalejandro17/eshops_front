@@ -2,14 +2,12 @@ import React, {useEffect, useState} from 'react';
 import CardComponent from './../components/CardComponent';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase.js"
-import { useAuth } from "context/AuthContext"
 
 const Home = () => {
     const [cards, setCards] = useState();
-    const {  userRef } = useAuth();
-    console.log(userRef);
+
     useEffect(() => {
-        const queryVar = query(collection(db, "stores"));
+        const queryVar = query(collection(db, "shops"));
         getDocs(queryVar).then((querySnapshot) => {
             const list = [];
             querySnapshot.forEach((doc) => {

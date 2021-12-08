@@ -45,10 +45,7 @@ const LoginScreen = (props) => {
         try {
             setError("")
             setLoading(true)
-            await login(auth, email, password).then(() => {
-              // console.log(currentUser);
-            }
-            );
+            await login(auth, email, password);
             navigate(from, { replace: true })
         } catch {
             setError("Failed to login an account")

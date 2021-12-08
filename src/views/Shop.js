@@ -31,7 +31,6 @@ const Shop = (props) => {
                 // doc.data() is never undefined for query doc snapshots
                 const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
                 list.push(object);
-                // console.log(doc.id, " => ", doc.data());
             });
             setCards(list);
             

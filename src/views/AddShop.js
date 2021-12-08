@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Button, Paper, Typography } from "@mui/material";
 // import { FormProvider, useForm } from "react-hook-form";
@@ -7,8 +7,9 @@ import { FormInputFile } from "components/FormInputFile";
 
 import {  useForm } from "react-hook-form";
 import {  ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase.js"
+import { storage, db } from "../firebase.js"
 import { useAuth } from "context/AuthContext"
+import { collection, addDoc } from "firebase/firestore"; 
 
 const AddShop = () => {
     const { userRef } = useAuth();
@@ -16,8 +17,6 @@ const AddShop = () => {
     const [shopName, setShopName] = useState(null);
     const [shopDescription, setShopDescription] = useState(null);
     const [fileUrl, setFileUrl] = useState('');
-
-    console.log(userRef);
 
     const { handleSubmit, reset, control, setValue, watch, register } = useForm();
     React.useEffect(() => {
@@ -70,13 +69,24 @@ const AddShop = () => {
         () => {
             // Upload completed successfully, now we can get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log('File available at', downloadURL);
-                    setFileUrl(downloadURL);
+                    // console.log('File available at', downloadURL);
+                    // setFileUrl(downloadURL);
+                    const productRef = addDoc(collection(db, "shops"), {
+                        name: shopName,
+                        description: shopDescription,
+                        image: downloadURL,
+                        userId: userRef
+                    }).then(() => {console.log("success")}).catch((e) => {console.log(e)});
                 });
             }
         );
         
     };
+    
+    // useEffect(() => {
+    //     console.log(fileUrl, shopName, shopDescription);
+        
+    // } , [fileUrl]);
 
     return (
         <Paper
