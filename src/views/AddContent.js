@@ -102,7 +102,6 @@ const AddContent = () => {
         <FormInputText name="contentDescription" control={control} label="Descripción" type="text"/>
 
         <FormInputFile name="FileValue" control={control} label="File" />
-
     
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
             {" "}

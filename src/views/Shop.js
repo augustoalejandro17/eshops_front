@@ -18,12 +18,13 @@ import { useAuth } from "context/AuthContext"
 
 const Shop = () => {
 
-    const { shopIndex } = useParams();
     const [cards, setCards] = useState();
-    const { userRef } = useAuth();
+    const { shopIndex } = useParams();
+    const { userRef, userPermissions } = useAuth();
     const [currentShop, setCurrentShop] = useState();
     const [shopOwner, setShopOwner] = useState(false);
 
+    console.log(userPermissions);
     const shopObject = useMemo(() => {
         return { index: shopIndex,
                  userRef: userRef,
@@ -50,9 +51,9 @@ const Shop = () => {
             if (docSnap.exists()) {
                 setCurrentShop(docSnap.data());
                 setShopOwner(currentUserRef === docSnap.data().userId);
-              } else {
+            } else {
                 console.log("No such document!");
-              }
+            }
         }
         fetchStoreData(shopObject.index, shopObject.userRef);
     },[shopObject]);
@@ -71,7 +72,7 @@ const Shop = () => {
                     <Link style={{ textDecoration: "none" }} 
                         to={`/add-product/${shopObject.index}`}
                     >
-                        <Button color="warning" size="md" style={{justifyContent: "center"}}>
+                        <Button color="warning" style={{justifyContent: "center"}}>
                             Añadir productos
                         </Button>
 
@@ -112,9 +113,9 @@ const Shop = () => {
                                     to={`/product/${card.index}`}
                                     key={card.index}
                                 >
-                                    <Button size="small" color="info">Ver producto</Button>
+                                    <Button color="info">Ver producto</Button>
                                 </Link>
-                                <Button size="small" color="primary">Añadir al carrito</Button>
+                                <Button color="primary">Añadir al carrito</Button>
                             </CardActions>
                             </CardBody>
                         </Box>

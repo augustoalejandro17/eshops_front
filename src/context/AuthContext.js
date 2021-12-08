@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react"
 import { auth } from "../firebase.js"
 import { db } from "../firebase.js"
-import { addDoc, collection, query, where, getDocs } from "firebase/firestore"; 
+import { addDoc, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore"; 
 
 import {
     createUserWithEmailAndPassword,
@@ -19,12 +19,10 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null)
     const [userRef, setUserRef] = useState(null)
-    const [userPermissionsRef, setUuserPermissionsRef] = useState(null)
+    const [userPermissionsRef, setUserPermissionsRef] = useState(null)
+    const [userPermissions, setUserPermissions] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    // function signup(email, password) {
-    //     return auth.createUserWithEmailAndPassword(email, password)
-    // }
     const signup = async (auth, userName, userEmail, userPassword) => {
         try {
           const user = await createUserWithEmailAndPassword(
@@ -87,11 +85,29 @@ export function AuthProvider({ children }) {
             getDocs(queryVar).then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     setUserRef(doc.id);
-                    setUuserPermissionsRef(doc.data().permissions);
+                    setUserPermissionsRef(doc.data().permissions);
                 });    
             });
         }
-    }, [currentUser])
+    }, [currentUser]);
+
+    useEffect(() => {
+        
+        async function fetchStoreData(indexToFetch){
+            const queryVar = doc(db, "user_permissions", indexToFetch);
+            const docSnap = await getDoc(queryVar);
+            if (docSnap.exists()) {
+                setUserPermissions(docSnap.data());
+            } else {
+                console.log("No such document!");
+            }
+        }
+        
+        if(userPermissionsRef) {
+            fetchStoreData(userPermissionsRef);
+        }
+
+    }, [userPermissionsRef]);
     // useEffect(() => {
     //     const unsubscribe = 
     //     onAuthStateChanged(auth, (currentUser) => {
@@ -105,7 +121,7 @@ export function AuthProvider({ children }) {
     const value = {
         currentUser,
         userRef,
-        userPermissionsRef,
+        userPermissions,
         signup,
         login,
         logout,
