@@ -1,33 +1,29 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import { useParams } from "react-router-dom";
-import classNames from "classnames";
 
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 
 import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
 
 import { Container, Grid, CardMedia, CardActions, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import styles from "assets/jss/material-kit-react/views/profilePage.js";
 import "views/styles.css";
 import Typography from '@mui/material/Typography';
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase.js"
 import { useAuth } from "context/AuthContext"
 
-import useClasses from "components/UseClasses";
 
 const Shop = () => {
 
     const { shopIndex } = useParams();
-    const classes = useClasses(styles);
     const [cards, setCards] = useState();
     const { userRef } = useAuth();
     const [currentShop, setCurrentShop] = useState();
     const [shopOwner, setShopOwner] = useState(false);
+
     const shopObject = useMemo(() => {
         return { index: shopIndex,
                  userRef: userRef,
@@ -45,7 +41,7 @@ const Shop = () => {
             setCards(list);
             
         });
-    },[shopObject])
+    },[shopObject]);
 
     useEffect(() => {
         async function fetchStoreData(indexToFetch, currentUserRef){
@@ -59,7 +55,7 @@ const Shop = () => {
               }
         }
         fetchStoreData(shopObject.index, shopObject.userRef);
-    },[shopObject])
+    },[shopObject]);
     
     return( 
         <div>

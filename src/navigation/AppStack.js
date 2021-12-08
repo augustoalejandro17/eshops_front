@@ -15,6 +15,7 @@ import AddShop from 'views/AddShop';
 import AddProduct from 'views/AddProduct';
 import MyOrders from 'views/MyOrders';
 import ApproveOrders from 'views/ApproveOrders';
+import AddContent from 'views/AddContent';
 
 function AppStack() {
     return (
@@ -26,9 +27,10 @@ function AppStack() {
                 <Route path="/edit-profile/:profileIndex" element={<EditProfile/>}/>
                 <Route path="/cart" element={<ShoppingCart/>}/>
                 <Route path="/shop/:shopIndex" element={<Shop/>}/>
-                <Route path="/product/:shopIndex" eleproduct={<Product />} />
+                <Route path="/product/:productIndex" element={<Product />} />
                 <Route path="/add-shop" element={<AddShop />} />
                 <Route path="/add-product/:shopIndex" element={<AddProduct/>}/>
+                <Route path="/add-content/:productIndex" element={<AddContent/>}/>
                 <Route path="/my-orders" element={<MyOrders/>}/>
                 <Route path="/approve-orders" element={<ApproveOrders/>}/>
                 <Route path="*" element={<NoMatch />} />

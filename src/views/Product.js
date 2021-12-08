@@ -1,12 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { useParams } from "react-router-dom";
 // nodejs library that concatenates classes
-import classNames from "classnames";
 
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
-import { Container, Grid, CardMedia, CardActions, Box, CardActionArea } from '@mui/material';
+import { Container, Grid, CardMedia, CardActions, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/componentsSections/javascriptStyles.js";
 
@@ -18,41 +17,80 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 // @material-ui/icons
 import Close from "@mui/icons-material/Close";
+import GridContainer from "components/Grid/GridContainer.js";
 
 import useClasses from "components/UseClasses";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase.js"
+import { useAuth } from "context/AuthContext"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Product = (props) => {
-    let params = useParams();
+const Product = () => {
+    let { productIndex } = useParams();
     const classes = useClasses(styles);
-    const [smallModal, setSmallModal] = React.useState(false);
-    const [largeModal, setLargeModal] = React.useState(false);
+    const [largeModal, setLargeModal] = useState(false);
     const [cards, setCards] = useState();
+    const { userRef } = useAuth();
+    const [currentProduct, setCurrentProduct] = useState();
+    const [shopOwner, setShopOwner] = useState(false);
+    const productObject = useMemo(() => {
+        return { index: productIndex,
+                userRef: userRef,
+        };
+    }, [productIndex, userRef]); 
 
     useEffect(() => {
-        const queryVar = query(collection(db, "content"), where("productOwner", "==", params.productIndex));
+        const queryVar = query(collection(db, "content"), where("productOwner", "==", productObject.index));
         getDocs(queryVar).then((querySnapshot) => {
             const list = [];
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
                 list.push(object);
             });
             setCards(list);
-            console.log(params.productIndex);
           });
-    },[params])
+    },[productObject]);
+
+    useEffect(() => {
+        async function fetchStoreData(indexToFetch, currentUserRef){
+            const queryVar = doc(db, "products", indexToFetch);
+            const docSnap = await getDoc(queryVar);
+            if (docSnap.exists()) {
+                setCurrentProduct(docSnap.data());
+                setShopOwner(currentUserRef === docSnap.data().userId);
+              } else {
+                console.log("No such document!");
+              }
+        }
+        fetchStoreData(productObject.index, productObject.userRef);
+    },[productObject]);
 
     return (
     <div>
-        {cards ? <Container sx={{ py: 8 }} maxWidth="lg">
-        <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>Product {params.productIndex}</h2>
+        {cards ? 
+        <Container sx={{ py: 8 }} maxWidth="lg">
+            <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>{currentProduct ? currentProduct.name : null}</h2>
+            {shopOwner ? 
+                <GridContainer direction="row"
+                    alignItems="center"
+                    justifyContent="center" 
+                    justify="center"
+                >
+                    <Link style={{ textDecoration: "none" }} 
+                        to={`/add-content/${productObject.index}`}
+                    >
+                        <Button color="warning" size="md" style={{justifyContent: "center"}}>
+                            Añadir contenido
+                        </Button>
 
+                    </Link>
+							
+                </GridContainer>
+                : null
+            }
             <Grid container spacing={4} 
                 direction="row"
                 justifyContent="center"

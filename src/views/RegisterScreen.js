@@ -43,10 +43,6 @@ const RegisterScreen = (props) => {
     async function handleRegister(e) {
         e.preventDefault()
         
-        // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-        //     return setError("Passwords do not match")
-        // }
-
         try {
             setError("")
             setLoading(true)
@@ -80,7 +76,6 @@ const RegisterScreen = (props) => {
                         // direction="column"
                         alignItems="center"
                         justifyContent="center" 
-                        justify="center"
             >
               <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes[cardAnimaton]}>
@@ -150,7 +145,6 @@ const RegisterScreen = (props) => {
                             direction="column"
                             alignItems="center"
                             justifyContent="center" 
-                            justify="center"
                         >
                         <Button simple color="primary" size="lg" onClick={handleRegister}>
                             Registrarse
