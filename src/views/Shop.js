@@ -23,14 +23,22 @@ const Shop = () => {
     const { userRef, userPermissions } = useAuth();
     const [currentShop, setCurrentShop] = useState();
     const [shopOwner, setShopOwner] = useState(false);
+    const [permissions, setPermissions] = useState(null);
+    
+    
 
-    console.log(userPermissions);
     const shopObject = useMemo(() => {
         return { index: shopIndex,
                  userRef: userRef,
         };
     }, [shopIndex, userRef]); 
-    
+
+    useEffect(() => {
+        if(userPermissions) {
+            setPermissions(userPermissions.productsAllowed);
+        }
+    },[userPermissions]);
+
     useEffect(() => {
         const queryVar = query(collection(db, "products"), where("shopId", "==", shopObject.index));
         getDocs(queryVar).then((querySnapshot) => {
@@ -57,7 +65,21 @@ const Shop = () => {
         }
         fetchStoreData(shopObject.index, shopObject.userRef);
     },[shopObject]);
-    
+
+    const showButton = (type, productIndex) => {
+        if(permissions){
+            switch(type) {
+                case "showProduct":
+                    return (permissions.includes(productIndex) || shopOwner) ? true : false;
+                    break;
+                case "addToCart":
+                    return (permissions.includes(productIndex) || shopOwner) ? false : true;
+                    break;
+                case "default":
+                    return false;
+            }
+        }
+    };
     return( 
         <div>
         {cards ? 
@@ -109,13 +131,18 @@ const Shop = () => {
                             
                             </Typography>
                             <CardActions style={{display: "flex", justifyContent: "center"}}>
-                                <Link style={{ textDecoration: "none" }} 
-                                    to={`/product/${card.index}`}
-                                    key={card.index}
-                                >
-                                    <Button color="info">Ver producto</Button>
-                                </Link>
-                                <Button color="primary">Añadir al carrito</Button>
+                                { showButton("showProduct", card.index) ?
+                                    <Link style={{ textDecoration: "none" }} 
+                                        to={`/product/${card.index}`}
+                                        key={card.index}
+                                    >
+                                        <Button color="info">Ver producto</Button>
+                                    </Link> : null
+                                }
+                                { showButton("addToCart", card.index) ?
+                                    <Button color="primary">Añadir al carrito</Button>
+                                    :null
+                                }
                             </CardActions>
                             </CardBody>
                         </Box>
