@@ -21,12 +21,11 @@ const Shop = () => {
     const [cards, setCards] = useState();
     const { shopIndex } = useParams();
     const { userRef, userPermissions } = useAuth();
+    const { addItemToCart } = useAuth();
     const [currentShop, setCurrentShop] = useState();
     const [shopOwner, setShopOwner] = useState(false);
     const [permissions, setPermissions] = useState(null);
     
-    
-
     const shopObject = useMemo(() => {
         return { index: shopIndex,
                  userRef: userRef,
@@ -44,7 +43,7 @@ const Shop = () => {
         getDocs(queryVar).then((querySnapshot) => {
             const list = [];
             querySnapshot.forEach((doc) => {
-                const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
+                const object = { id: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image, price: doc.data().price, userId: doc.data().userId };
                 list.push(object);
             });
             setCards(list);
@@ -71,11 +70,9 @@ const Shop = () => {
             switch(type) {
                 case "showProduct":
                     return (permissions.includes(productIndex) || shopOwner) ? true : false;
-                    break;
                 case "addToCart":
                     return (permissions.includes(productIndex) || shopOwner) ? false : true;
-                    break;
-                case "default":
+                default:
                     return false;
             }
         }
@@ -109,12 +106,11 @@ const Shop = () => {
                 alignItems="center"
             >
                 {cards.map((card) => (
-                    <Grid item key={card.index} xs={12} sm={12} md={12}>  
+                    <Grid item key={card.id} xs={12} sm={12} md={12}>  
                     
                         <Card
                         sx={{ height: '100%', display: 'flex' }}
                         >
-                        
                         <Box sx={{ display: 'flex', flexDirection: 'row', width: "100%" }}>
                             <CardMedia
                             component="img"
@@ -131,16 +127,16 @@ const Shop = () => {
                             
                             </Typography>
                             <CardActions style={{display: "flex", justifyContent: "center"}}>
-                                { showButton("showProduct", card.index) ?
+                                { showButton("showProduct", card.id) ?
                                     <Link style={{ textDecoration: "none" }} 
-                                        to={`/product/${card.index}`}
-                                        key={card.index}
+                                        to={`/product/${card.id}`}
+                                        key={card.id}
                                     >
                                         <Button color="info">Ver producto</Button>
                                     </Link> : null
                                 }
-                                { showButton("addToCart", card.index) ?
-                                    <Button color="primary">Añadir al carrito</Button>
+                                { showButton("addToCart", card.id) ?
+                                    <Button onClick={() => { addItemToCart(card);}} color="primary">Añadir al carrito</Button>
                                     :null
                                 }
                             </CardActions>
@@ -153,7 +149,6 @@ const Shop = () => {
         </Container> 
         : <div>Loading...</div>}
         </div>
-         
     );
 }
 

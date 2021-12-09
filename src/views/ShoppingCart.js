@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -7,11 +7,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import Grid from '@mui/material/Grid';
-
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import { useAuth } from "context/AuthContext"
+import { Timestamp, addDoc, collection } from "firebase/firestore"; 
+import { db } from "../firebase.js"
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
@@ -23,31 +24,37 @@ function getStepContent() {
 
 const ShoppingCart = () => {
     const [activeStep, setActiveStep] = React.useState(0);
+    const { cart, resetCart } = useAuth();
+    const { currentUserData } = useAuth();
+    const handleNext = (items) => {
+        async function storeOrder(docData) {
+            const orderRef = await addDoc(collection(db, "orders"), docData).then(() => {console.log("success")}).catch((e) => {console.log(e)});
+        }
+        const setupData = {
+            status: 'payment-pending',
+            userId: items[0].userId,
+            products: items.map(item => item.id),
+            totalValue: items.reduce((acc, item) => acc + item.price, 0),
+            date: Timestamp.fromDate(new Date()),
+            buyer: currentUserData
+        }
 
-    const handleNext = () => {
         setActiveStep(activeStep + 1);
+        storeOrder(setupData);
+        resetCart();
     };
 
 //   const handleBack = () => {
 //     setActiveStep(activeStep - 1);
 //   };
-
-  return (
+    return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
-          {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper> */}
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>
@@ -63,22 +70,17 @@ const ShoppingCart = () => {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
+                {cart.length > 0 ? 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {/* {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )} */}
-
                   <Button
                     variant="contained"
-                    onClick={handleNext}
+                    onClick={() => { handleNext(cart)}} 
                     sx={{ mt: 3, ml: 1 }}
                   >
-                    {/* {activeStep === steps.length - 1 ? 'Place order' : 'Next'} */}
                     Place order
                   </Button>
-                </Box>
+                </Box> 
+                : null}
               </React.Fragment>
             )}
           </React.Fragment>
@@ -91,86 +93,35 @@ const ShoppingCart = () => {
 export default ShoppingCart;
 
 
-
-const products = [
-  {
-    name: 'Product 1',
-    desc: 'A nice thing',
-    price: '$9.99',
-  },
-  {
-    name: 'Product 2',
-    desc: 'Another thing',
-    price: '$3.45',
-  },
-  {
-    name: 'Product 3',
-    desc: 'Something else',
-    price: '$6.51',
-  },
-  {
-    name: 'Product 4',
-    desc: 'Best thing of all',
-    price: '$14.11',
-  },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-
-const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
-
 function Review() {
+    const { cart } = useAuth();
+    const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        setTotal(cart.reduce((acc, item) => acc + item.price, 0));
+    }, [cart]);
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         Order summary
       </Typography>
       <List disablePadding>
-        {products.map((product) => (
+        {cart.map((product) => (
           <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
+            <ListItemText primary={product.name} secondary={product.description} />
+            <Typography variant="body2">${product.price}</Typography>
           </ListItem>
         ))}
 
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            $34.06
+            ${total}
           </Typography>
         </ListItem>
       </List>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-            Shipping
-          </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
-        </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-            Payment details
-          </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
+      
     </React.Fragment>
   );
 }

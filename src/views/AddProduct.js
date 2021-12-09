@@ -28,7 +28,7 @@ const AddProduct = () => {
             setFile(data.attachments[0]);         
             setProductName(data.productName);
             setProductDescription(data.productDescription);
-            setProductPrice(data.productPrice);
+            setProductPrice(parseFloat(data.productPrice));
         });
         return () => subscription.unsubscribe();
     }, [watch]);

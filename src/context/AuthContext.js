@@ -18,10 +18,12 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null)
+    const [currentUserData, setCurrentUserData] = useState(null)
     const [userRef, setUserRef] = useState(null)
     const [userPermissionsRef, setUserPermissionsRef] = useState(null)
     const [userPermissions, setUserPermissions] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [cart, setCart] = useState([])
 
     const signup = async (auth, userName, userEmail, userPassword) => {
         try {
@@ -86,6 +88,7 @@ export function AuthProvider({ children }) {
                 querySnapshot.forEach((doc) => {
                     setUserRef(doc.id);
                     setUserPermissionsRef(doc.data().permissions);
+                    setCurrentUserData(doc.data());
                 });    
             });
         }
@@ -117,14 +120,31 @@ export function AuthProvider({ children }) {
 
     //     return unsubscribe
     // }, [])
-    
+
+    const addItemToCart = (item) => {
+        setCart([...cart, item]);
+    }
+
+    const removeItemFromCart = (item) => {
+        setCart(cart.filter(cartItem => cartItem.id !== item.id));
+    }
+
+    const resetCart = () => {
+        setCart([]);
+    }
+
     const value = {
         currentUser,
         userRef,
         userPermissions,
+        cart,
+        currentUserData,
         signup,
         login,
         logout,
+        addItemToCart,
+        removeItemFromCart,
+        resetCart
         // resetPassword,
         // updateEmail,
         // updatePassword
