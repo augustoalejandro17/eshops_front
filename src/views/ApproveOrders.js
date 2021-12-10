@@ -15,8 +15,8 @@ import { db } from "../firebase.js"
 import { addDoc, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore"; 
 import { useAuth } from "context/AuthContext"
 
-function createData(client, products, date, totalValue, status, actions) {
-  return { client, products, date, totalValue, status, actions };
+function createData(id, client, products, date, totalValue, status, actions) {
+  return { id, client, products, date, totalValue, status, actions };
 }
 
 const roundButtons = [
@@ -34,48 +34,41 @@ const roundButtons = [
 
 
 export default function ApproveOrders() {
-	const [orders, setOrders] = useState(null);
+	const [orders, setOrders] = useState([]);
 	const { userRef } = useAuth();
 	// const [data, setData] = useState(null);
 
 	useEffect(() => {
         const queryVar = query(collection(db, "orders"), where("userId", "==", userRef));	
         getDocs(queryVar).then((querySnapshot) => {
-            const list = [];
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((doc, key) => {
                 const object = { id: doc.id, ...doc.data()};
-                list.push(object);
+                setOrders(...orders, object);
             });
-            setOrders(list);
         });
+		
     },[])
 
-	const data = useMemo(() => {
-        if(orders){
-			const dataArray = orders.map((order, key) => {
-				return createData(order.buyer.name, order.products, order.date.toDate().toDateString(), order.totalValue, order.status, roundButtons);
-			});
-
-			// if(dataArray.length > 0){
-			// 	setData(dataArray);
-			// }
-		}
-    }, [orders]); 
-
+	// useEffect(() => {
+	// 	// if(orders.length > 0) {
+    //     // console.log(orders)
+    // },[orders])
 	// if(orders){
 	// 	const dataArray = orders.map((order, key) => {
 	// 		return createData(order.buyer.name, order.products, order.date.toDate().toDateString(), order.totalValue, order.status, roundButtons);
-	// 	});
+	// 	};
 
 	// 	if(dataArray.length > 0){
 	// 		setData(dataArray);
 	// 	}
 	// }
-	
-	// const data = [
-	// 	createData('Cliente 1', "product1", 60.0, roundButtons),
-	// 	createData('Cliente 2', "product2", 90.15, roundButtons),
-	// ];
+	// if(orders.length > 0){
+		console.log(orders)
+	// }
+	const data = [
+		createData(1, 'Cliente 1', "product1", 60.0, roundButtons),
+		createData(2, 'Cliente 2', "product2", 90.15, roundButtons),
+	];
 	return (
 		<TableContainer component={Paper}>
 			{data ? <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -90,13 +83,13 @@ export default function ApproveOrders() {
 				<TableBody>
 				{data.map((row) => (
 					<TableRow
-					key={row.name}
+					key={row.id}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 					>
 					<TableCell component="th" scope="row">
 						{row.client}
 					</TableCell>
-					<TableCell align="right">{row.product}</TableCell>
+					<TableCell align="right">{row.products}</TableCell>
 					<TableCell align="right">{row.totalValue}</TableCell>
 					<TableCell align="right">{row.actions}</TableCell>
 					</TableRow>
