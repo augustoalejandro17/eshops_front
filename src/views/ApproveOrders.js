@@ -31,44 +31,35 @@ const roundButtons = [
   );
 });
 
-
-
 export default function ApproveOrders() {
 	const [orders, setOrders] = useState([]);
 	const { userRef } = useAuth();
-	// const [data, setData] = useState(null);
+	const [data, setData] = useState();
 
 	useEffect(() => {
-        const queryVar = query(collection(db, "orders"), where("userId", "==", userRef));	
-        getDocs(queryVar).then((querySnapshot) => {
-            querySnapshot.forEach((doc, key) => {
-                const object = { id: doc.id, ...doc.data()};
-                setOrders(...orders, object);
-            });
-        });
-		
-    },[])
+		const fetchData = async () => {
+			const queryVar = query(collection(db, "orders"), where("userId", "==", userRef));	
+			const querySnapshot  = await getDocs(queryVar);
+			var ordersObject = [];
+			querySnapshot.forEach((doc) => {
+	
+				ordersObject = 	[...ordersObject, { ...doc.data(), id: doc.id }];	
+			});
+			setOrders(ordersObject);
 
-	// useEffect(() => {
-	// 	// if(orders.length > 0) {
-    //     // console.log(orders)
-    // },[orders])
-	// if(orders){
-	// 	const dataArray = orders.map((order, key) => {
-	// 		return createData(order.buyer.name, order.products, order.date.toDate().toDateString(), order.totalValue, order.status, roundButtons);
-	// 	};
+		};
+		fetchData();
+    },[userRef])
 
-	// 	if(dataArray.length > 0){
-	// 		setData(dataArray);
-	// 	}
-	// }
-	// if(orders.length > 0){
-		console.log(orders)
-	// }
-	const data = [
-		createData(1, 'Cliente 1', "product1", 60.0, roundButtons),
-		createData(2, 'Cliente 2', "product2", 90.15, roundButtons),
-	];
+	useEffect(() => {
+		if(orders.length > 0){
+			const dataToSet = orders.map((order) => {
+				return	createData(order.id, order.client.name, order.products, order.date, order.totalValue, order.status, roundButtons);
+			})	
+			setData(dataToSet);
+		}
+	}, [orders]);
+
 	return (
 		<TableContainer component={Paper}>
 			{data ? <Table sx={{ minWidth: 650 }} aria-label="simple table">
