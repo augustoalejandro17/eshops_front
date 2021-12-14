@@ -15,6 +15,7 @@ import Slide from "@mui/material/Slide";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import ReactPlayer from 'react-player'
 // @material-ui/icons
 import Close from "@mui/icons-material/Close";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -33,6 +34,7 @@ const Product = () => {
     const classes = useClasses(styles);
     const [largeModal, setLargeModal] = useState(false);
     const [cards, setCards] = useState();
+    const [videoUrl, setVideoUrl] = useState("");
     const { userRef } = useAuth();
     const [currentProduct, setCurrentProduct] = useState();
     const [shopOwner, setShopOwner] = useState(false);
@@ -47,7 +49,7 @@ const Product = () => {
         getDocs(queryVar).then((querySnapshot) => {
             const list = [];
             querySnapshot.forEach((doc) => {
-                const object = { index: doc.id, name: doc.data().name, description: doc.data().description, image: doc.data().image };
+                const object = { index: doc.id, ...doc.data()};
                 list.push(object);
             });
             setCards(list);
@@ -68,6 +70,7 @@ const Product = () => {
         fetchStoreData(productObject.index, productObject.userRef);
     },[productObject]);
 
+    useEffect(() => { console.log(videoUrl)}, [videoUrl]);
     return (
     <div>
         {cards ? 
@@ -120,7 +123,7 @@ const Product = () => {
                             </Typography>
                         <CardActions style={{display: "flex", justifyContent: "center"}}>
 
-                            <Button size="small" color="info" onClick={() => setLargeModal(true)}>Ver</Button>
+                            <Button value={card.videoUrl} size="small" color="info" onClick={ e => {setLargeModal(true); setVideoUrl(e.target.value); console.log(e.target.url)}}>Ver</Button>
                         </CardActions>
                         </CardBody>
                     </Box>
@@ -163,16 +166,10 @@ const Product = () => {
           id="large-modal-slide-description"
           className={classes.modalBody}
         >
-          <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pulvinar 
-                            vel nibh sit amet dignissim. Ut non vulputate purus. Etiam commodo tincidunt 
-                            placerat. Cras ut lacus scelerisque, posuere mauris eget, mollis felis. Praesent 
-                            volutpat congue lectus, sit amet gravida libero maximus sed. Mauris dui quam, 
-                            vehicula id tellus eget, ultricies malesuada erat. Praesent porta elit eu augue 
-                            accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
-                            eros. </p>
+            <ReactPlayer width="550px" height="360px"  controls url={videoUrl} />
         </DialogContent>
         </Dialog>
-         </div>
+    </div>
   );
 };  
 
