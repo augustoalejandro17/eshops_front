@@ -33,7 +33,7 @@ const ShoppingCart = () => {
         const setupData = {
             status: 'payment-pending',
             userId: items[0].userId,
-            products: items.map(item => item.id),
+            products: items.map(item => item),
             totalValue: items.reduce((acc, item) => acc + item.price, 0),
             date: Timestamp.fromDate(new Date()),
             client: currentUserData

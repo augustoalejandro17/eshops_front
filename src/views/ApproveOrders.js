@@ -12,24 +12,43 @@ import Close from "@mui/icons-material/Close";
 import Button from "components/CustomButtons/Button.js";
 import DoneIcon from '@mui/icons-material/Done';
 import { db } from "../firebase.js"
-import { addDoc, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore"; 
+import { addDoc, collection, query, where, getDocs, doc, getDoc, updateDoc } from "firebase/firestore"; 
 import { useAuth } from "context/AuthContext"
 
 function createData(id, client, products, date, totalValue, status, actions) {
   return { id, client, products, date, totalValue, status, actions };
 }
+async function confirmOrder(id){
+	const orderRef = doc(db, "orders", id);
+	await updateDoc(orderRef, { status: "confirmed" });
+}
 
-const roundButtons = [
-  { color: "info", icon: FilePresentIcon },
-  { color: "success", icon: DoneIcon },
-  { color: "danger", icon: Close }
-].map((prop, key) => {
-  return (
-    <Button round justIcon size="sm" color={prop.color} key={key}>
-      <prop.icon />
-    </Button>
-  );
-});
+async function declineOrder(id){
+	const orderRef = doc(db, "orders", id);
+	await updateDoc(orderRef, { status: "declined" });
+}
+const roundButtons = (id) => {
+
+const icons = [{ color: "info", icon: FilePresentIcon },
+	{ color: "success", icon: DoneIcon, id: id, onclick: (productId) => { confirmOrder(productId) } },
+	{ color: "danger", icon: Close, id: id, onclick: (productId) => { declineOrder(productId) } }
+	].map((prop, key) => {
+		return (		
+			<Button
+				key={key}
+				round
+				justIcon
+				color={prop.color}
+				size="sm"
+				onClick={() => { prop.onclick(prop.id) }}
+			>
+				<prop.icon />
+			</Button>
+		)
+	})
+	return icons;	
+}
+
 
 export default function ApproveOrders() {
 	const [orders, setOrders] = useState([]);
@@ -54,7 +73,8 @@ export default function ApproveOrders() {
 	useEffect(() => {
 		if(orders.length > 0){
 			const dataToSet = orders.map((order) => {
-				return	createData(order.id, order.client.name, order.products, order.date, order.totalValue, order.status, roundButtons);
+				let productNames = order.products.map((product) => product.name);
+				return	createData(order.id, order.client.name, productNames, order.date, order.totalValue, order.status, roundButtons(order.id));
 			})	
 			setData(dataToSet);
 		}
@@ -65,10 +85,12 @@ export default function ApproveOrders() {
 			{data ? <Table sx={{ minWidth: 650 }} aria-label="simple table">
 				<TableHead>
 				<TableRow>
-					<TableCell>Cliente</TableCell>
-					<TableCell align="right">Producto(s) adquirido(s)</TableCell>
-					<TableCell align="right">Valor total</TableCell>
-					<TableCell align="right">Acciones</TableCell>
+					<TableCell align="center">Cliente</TableCell>
+					<TableCell align="center">Producto(s) adquirido(s)</TableCell>
+					<TableCell align="center">Fecha de la orden</TableCell>
+					<TableCell align="center">Valor total</TableCell>
+					<TableCell align="center">Estado de la orden</TableCell>
+					<TableCell align="center">Acciones</TableCell>
 				</TableRow>
 				</TableHead>
 				<TableBody>
@@ -77,12 +99,14 @@ export default function ApproveOrders() {
 					key={row.id}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 					>
-					<TableCell component="th" scope="row">
+					<TableCell component="th" scope="row" align="center">
 						{row.client}
 					</TableCell>
-					<TableCell align="right">{row.products}</TableCell>
-					<TableCell align="right">{row.totalValue}</TableCell>
-					<TableCell align="right">{row.actions}</TableCell>
+					<TableCell align="center">{row.products}</TableCell>
+					<TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
+					<TableCell align="center">${row.totalValue}</TableCell>
+					<TableCell align="center">{row.status}</TableCell>
+					<TableCell align="center">{row.actions}</TableCell>
 					</TableRow>
 				))}
 				</TableBody>
