@@ -12,26 +12,35 @@ import Close from "@mui/icons-material/Close";
 import Button from "components/CustomButtons/Button.js";
 import DoneIcon from '@mui/icons-material/Done';
 import { db } from "../firebase.js"
-import { addDoc, collection, query, where, getDocs, doc, getDoc, updateDoc } from "firebase/firestore"; 
+import { arrayUnion, collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore"; 
 import { useAuth } from "context/AuthContext"
 
 function createData(id, client, products, date, totalValue, status, actions) {
   return { id, client, products, date, totalValue, status, actions };
 }
-async function confirmOrder(id){
+
+async function updatePermissions(permissionsRefId, shopId){
+	const permissionsRef = doc(db, "user_permissions", permissionsRefId);
+	await updateDoc(permissionsRef, {
+		productsAllowed: arrayUnion(shopId)
+	})
+}	
+async function confirmOrder(id, permissionsRef){
 	const orderRef = doc(db, "orders", id);
 	await updateDoc(orderRef, { status: "confirmed" });
+	await updatePermissions(permissionsRef, id);
+	console.log("confirmed");
 }
 
-async function declineOrder(id){
+async function declineOrder(id, permissionsRef){
 	const orderRef = doc(db, "orders", id);
 	await updateDoc(orderRef, { status: "declined" });
 }
-const roundButtons = (id) => {
+const roundButtons = (id, permissionsRef) => {
 
 const icons = [{ color: "info", icon: FilePresentIcon },
-	{ color: "success", icon: DoneIcon, id: id, onclick: (productId) => { confirmOrder(productId) } },
-	{ color: "danger", icon: Close, id: id, onclick: (productId) => { declineOrder(productId) } }
+	{ color: "success", icon: DoneIcon, id: id, onclick: (productId) => { confirmOrder(productId, permissionsRef) } },
+	{ color: "danger", icon: Close, id: id, onclick: (productId) => { declineOrder(productId, permissionsRef) } }
 	].map((prop, key) => {
 		return (		
 			<Button
@@ -40,7 +49,7 @@ const icons = [{ color: "info", icon: FilePresentIcon },
 				justIcon
 				color={prop.color}
 				size="sm"
-				onClick={() => { prop.onclick(prop.id) }}
+				onClick={() => { prop.onclick(prop.id, prop.userPermissionsRef) }}
 			>
 				<prop.icon />
 			</Button>
@@ -74,7 +83,7 @@ export default function ApproveOrders() {
 		if(orders.length > 0){
 			const dataToSet = orders.map((order) => {
 				let productNames = order.products.map((product) => product.name);
-				return	createData(order.id, order.client.name, productNames, order.date, order.totalValue, order.status, roundButtons(order.id));
+				return	createData(order.id, order.client.name, productNames, order.date, order.totalValue, order.status, roundButtons(order.id, order.client.permissions));
 			})	
 			setData(dataToSet);
 		}
