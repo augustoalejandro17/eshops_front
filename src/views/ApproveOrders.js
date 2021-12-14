@@ -25,6 +25,7 @@ async function updatePermissions(permissionsRefId, shopIdArray){
 		await updateDoc(permissionsRef, { productsAllowed: arrayUnion(shopId) });
 	});
 }	
+
 async function confirmOrder(id, permissionsRef, productId){
 	const orderRef = doc(db, "orders", id);
 	await updateDoc(orderRef, { status: "confirmed" });

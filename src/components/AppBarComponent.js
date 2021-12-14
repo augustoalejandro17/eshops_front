@@ -207,7 +207,7 @@ const DefaultAppBar = (props) => {
                 component="div"
                 sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                Eshops
+                Atina
                 </Typography>
             </Link>
             {/* <Search style={{ color: 'black' }}variant="outlined">
