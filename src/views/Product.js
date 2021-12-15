@@ -34,7 +34,8 @@ const Product = () => {
     const classes = useClasses(styles);
     const [largeModal, setLargeModal] = useState(false);
     const [cards, setCards] = useState();
-    const [videoUrl, setVideoUrl] = useState("");
+    const [videoUrl, setVideoUrl] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
     const { userRef } = useAuth();
     const [currentProduct, setCurrentProduct] = useState();
     const [shopOwner, setShopOwner] = useState(false);
@@ -70,7 +71,19 @@ const Product = () => {
         fetchStoreData(productObject.index, productObject.userRef);
     },[productObject]);
 
-    useEffect(() => { console.log(videoUrl)}, [videoUrl]);
+    const pressViewButtonOnVideo = (e) => {
+        setLargeModal(true); 
+        setVideoUrl(e.target.value); 
+        setImageUrl(null);
+    }
+
+    const pressViewButtonOnPhoto = (e) => {
+        setLargeModal(true);
+        setImageUrl(e.target.value);
+        setVideoUrl(null);
+    }
+
+
     return (
     <div>
         {cards ? 
@@ -122,8 +135,11 @@ const Product = () => {
                             
                             </Typography>
                         <CardActions style={{display: "flex", justifyContent: "center"}}>
-
-                            <Button value={card.videoUrl} size="small" color="info" onClick={ e => {setLargeModal(true); setVideoUrl(e.target.value); console.log(e.target.url)}}>Ver</Button>
+                            {card.videoUrl ?
+                            <Button value={card.videoUrl} size="small" color="info" onClick={ e => pressViewButtonOnVideo(e) }>Ver</Button>
+                            : 
+                            <Button value={card.image} size="small" color="info" onClick={ e => pressViewButtonOnPhoto(e) }>Ver</Button>
+                            }
                         </CardActions>
                         </CardBody>
                     </Box>
@@ -166,7 +182,11 @@ const Product = () => {
           id="large-modal-slide-description"
           className={classes.modalBody}
         >
-            <ReactPlayer width="550px" height="360px"  controls url={videoUrl} />
+            { videoUrl ?
+                <ReactPlayer width="550px" height="360px"  controls url={videoUrl} />
+                :
+                <img src={imageUrl} alt="product" width="550px" height="360px" />
+            }
         </DialogContent>
         </Dialog>
     </div>
