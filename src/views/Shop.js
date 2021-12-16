@@ -18,12 +18,13 @@ import { useAuth } from "context/AuthContext"
 
 const Shop = () => {
 
-    const [cards, setCards] = useState();
     const { shopIndex } = useParams();
     const { userRef, userPermissions } = useAuth();
     const { addItemToCart } = useAuth();
+    const [cards, setCards] = useState();
     const [currentShop, setCurrentShop] = useState();
-    const [shopOwner, setShopOwner] = useState(false);
+    const [isShopOwner, setIsShopOwner] = useState(false);
+    const [shopOwner, setShopOwner] = useState("");
     const [permissions, setPermissions] = useState(null);
     
     const shopObject = useMemo(() => {
@@ -57,7 +58,8 @@ const Shop = () => {
             const docSnap = await getDoc(queryVar);
             if (docSnap.exists()) {
                 setCurrentShop(docSnap.data());
-                setShopOwner(currentUserRef === docSnap.data().userId);
+                setIsShopOwner(currentUserRef === docSnap.data().userId);
+                setShopOwner(docSnap.data().userId);
             } else {
                 console.log("No such document!");
             }
@@ -69,9 +71,9 @@ const Shop = () => {
         if(permissions){
             switch(type) {
                 case "showProduct":
-                    return (permissions.includes(productIndex) || shopOwner) ? true : false;
+                    return (permissions.includes(productIndex) || isShopOwner) ? true : false;
                 case "addToCart":
-                    return (permissions.includes(productIndex) || shopOwner) ? false : true;
+                    return (permissions.includes(productIndex) || isShopOwner) ? false : true;
                 default:
                     return false;
             }
@@ -82,7 +84,7 @@ const Shop = () => {
         {cards ? 
         <Container sx={{ py: 8 }} maxWidth="lg">
             <h2 style={{display: "flex", justifyContent: "center", marginTop: "-20px"}}>{currentShop ? currentShop.name : null}</h2>
-            {shopOwner ? 
+            {isShopOwner ? 
                 <GridContainer direction="row"
                     alignItems="center"
                     justifyContent="center" 
@@ -146,6 +148,14 @@ const Shop = () => {
                     </Grid>
                 ))}
             </Grid>
+            <Link style={{ textDecoration: "none" }} 
+                to={`/profile/${shopOwner}`}
+            >
+                <Button color="warning" style={{justifyContent: "center"}}>
+                    Contactar al vendedor
+                </Button>
+
+            </Link>
         </Container> 
         : <div>Loading...</div>}
         </div>

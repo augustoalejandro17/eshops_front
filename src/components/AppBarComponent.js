@@ -72,7 +72,7 @@ const DefaultAppBar = (props) => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const { logout } = useAuth();
+    const { logout, userRef } = useAuth();
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
 
@@ -130,7 +130,7 @@ const DefaultAppBar = (props) => {
       >
         <MenuItem onClick={handleMenuClose}>
             <NavLink style={{ textDecoration: "none", color: "black" }} 
-                to={`/profile`}>  Perfil
+                to={`/profile/${userRef}`}>  Perfil
             </NavLink>
         </MenuItem>
         <MenuItem onClick={handleLogout}>
