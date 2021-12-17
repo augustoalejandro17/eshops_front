@@ -49,7 +49,8 @@ const Messages = () => {
     const [messages, setMessages] = useState([]);
     const classes = useClasses(styles);
     const location = useLocation();
-    console.log(location);
+    const users = location.state.users;
+    console.log(users.receiver);
     return (
         <div>
         <Box sx={{ flexGrow: 1, marginTop: "20px" }}>

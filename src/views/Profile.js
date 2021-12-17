@@ -43,7 +43,7 @@ const Profile = (props) => {
     
     const navigate = useNavigate();
     const location = useLocation();
-    const users = [userRef, userId];
+    const users = {sender: userRef, receiver: userId};
 
     return (
         <div>
@@ -96,7 +96,7 @@ const Profile = (props) => {
                         :
 						<Link style={{ textDecoration: "none" }} 
 								to={ `/messages` } 
-								state= { users }
+								state= { {users: users} }
                                 // key={card.index}
                         >
                             <Button simple color="primary" size="lg" >
