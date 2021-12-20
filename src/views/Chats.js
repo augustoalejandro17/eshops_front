@@ -43,7 +43,7 @@ const styles = ({
     }
 });
 
-const Messages = () => {
+const Chats = () => {
     const [chats, setChats] = useState([]);
     const [emptyChats, setEmptyChats] = useState(false);
     const { currentUser } = useAuth();
@@ -216,4 +216,4 @@ const Messages = () => {
     );
 }
 
-export default Messages;
+export default Chats;

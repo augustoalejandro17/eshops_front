@@ -97,7 +97,7 @@ const Profile = (props) => {
                         </Link> </div>
                         :
 						<Link style={{ textDecoration: "none" }} 
-								to={ `/messages` } 
+								to={ `/chats` } 
 								state= { {users: users} }
                                 // key={card.index}
                         >
