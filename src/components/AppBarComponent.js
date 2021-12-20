@@ -163,7 +163,7 @@ const DefaultAppBar = (props) => {
                 <MailIcon />
               </Badge>
             </IconButton>
-            <p>Messages</p>
+            Messages
           </MenuItem>
           <MenuItem>
             <IconButton
@@ -175,7 +175,7 @@ const DefaultAppBar = (props) => {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <p>Notifications</p>
+            Notifications
           </MenuItem>
           <MenuItem onClick={handleProfileMenuOpen}>
             <IconButton
@@ -187,7 +187,7 @@ const DefaultAppBar = (props) => {
             >
               <AccountCircle />
             </IconButton>
-            <p>Profile</p>
+            Profile
           </MenuItem>
         </Menu>
     );

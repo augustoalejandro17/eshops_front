@@ -32,6 +32,8 @@ const Profile = (props) => {
     const { userRef } = useAuth();
     const { userId } = useParams();
 
+    const senderData = useAuth().userData;
+
     const classes = useClasses(styles);
     const { ...rest } = props;
     const imageClasses = classNames(
