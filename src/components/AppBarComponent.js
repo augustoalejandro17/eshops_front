@@ -223,7 +223,7 @@ const DefaultAppBar = (props) => {
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 {/* <Link style={{ textDecoration: "none" }} 
-                    to={`/messages`}
+                    to={`/chats`}
                 > 
                     <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                         <Badge badgeContent={4} color="error" style={{ color: 'black' }}>

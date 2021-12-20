@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import DefaultHeader from 'views/DefaultHeader';
 import Home from 'views/Home';
 import Shop from 'views/Shop';
-import Messages from 'views/Messages';
+import Chats from 'views/Chats';
 import Profile from 'views/Profile';
 import ShoppingCart from 'views/ShoppingCart';
 import Product from 'views/Product';
@@ -22,7 +22,7 @@ function AppStack() {
         <Routes>
             <Route path="/" element={<DefaultHeader/>}>
                 <Route path="/" element={<Home/>}/>
-                <Route path="/messages" element={<Messages/>}/>
+                <Route path="/chats" element={<Chats/>}/>
                 <Route path="/profile/:userId" element={<Profile/>}/>
                 <Route path="/edit-profile/:profileIndex" element={<EditProfile/>}/>
                 <Route path="/cart" element={<ShoppingCart/>}/>
