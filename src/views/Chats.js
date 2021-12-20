@@ -72,6 +72,9 @@ const Chats = () => {
                 return chatsActive.map(chat => { 
                     const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
                     if(chat.participants.includes(senderUserActive) && chat.participants.includes(receiverUserActive)) {
+                        if(chat.messages && chat.messages.length > 0) {
+                            setCurrentMessageList(chat.messages);
+                        }
                         return {...chat, active: true, receiverName: receiverName};
                     }
                     else {
@@ -175,7 +178,7 @@ const Chats = () => {
               </Grid>
               <Grid item xs={9}>
                   <List className={classes.messageArea}>
-                      {uiChatsList ? 
+                      {currentMessageList.length > 0 ? 
                       <div>
                       <ListItem key="1">
                           <Grid container>
@@ -218,7 +221,15 @@ const Chats = () => {
                           </Grid>
                       </ListItem> 
                       
-                      </div>:null}
+                      </div>:
+                        <ListItem key="1">
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
+                                </Grid>
+                            </Grid>
+                        </ListItem>
+                      }
                   </List>
                   <Divider />
                   <Grid container style={{padding: '20px'}}>
