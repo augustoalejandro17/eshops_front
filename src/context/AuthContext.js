@@ -88,7 +88,7 @@ export function AuthProvider({ children }) {
                 querySnapshot.forEach((doc) => {
                     setUserRef(doc.id);
                     setUserPermissionsRef(doc.data().permissions);
-                    setCurrentUserData(doc.data());
+                    setCurrentUserData({id: doc.id, ...doc.data()});
                 });    
             });
         }

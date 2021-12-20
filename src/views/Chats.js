@@ -44,52 +44,69 @@ const styles = ({
 });
 
 const Chats = () => {
-    const [chats, setChats] = useState([]);
+    const [chats, setChats] = useState(null);
     const [emptyChats, setEmptyChats] = useState(false);
-    const { currentUser } = useAuth();
-    const [uiChatsList, setUIChatsList] = useState(null);
+    const { currentUserData } = useAuth();
+    const [uiChatsList, setUIChatsList] = useState([]);
     const [currentChatRef, setCurrentChatRef] = useState(null);
+    const [currentMessageList, setCurrentMessageList] = useState([]);
     const [receiverUser, setReceiverUser] = useState(null);
     const classes = useClasses(styles);
     const location = useLocation();
     const users = location.state.users;
 
-    async function createChat(senderUser, receiverUser) {
+    async function createChat(senderUserArgument, receiverUserArgument, senderData, receiverData) {
         const chatsRef = collection(db, "chats");
         const newChat = {
-            participants: [senderUser, receiverUser],
+            participants: [senderUserArgument, receiverUserArgument],
+            participantsData: [senderData, receiverData],
         }
         const docRef = await addDoc(chatsRef, newChat);
         setCurrentChatRef(docRef)
+        return { ...newChat, active: true, receiverName: receiverData.name };
     };
 
-    function setUIChats(chats, senderUser, receiverUser) {
+    function setUIChats(chats, senderUserArgument, receiverUserArgument, senderData, receiverData ) {
         if(chats.length > 0) {
-            const chatActive = (chatsActive, senderUserActive, receiverUserActive) => {
+            const listOfChatsWithState = (chatsActive, senderUserActive, receiverUserActive) => {
                 return chatsActive.map(chat => { 
-                    if(chat.participants.includes(senderUserActive) && chat.includes(receiverUserActive)) {
-                        return {...chat, active: true};
+                    const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
+                    if(chat.participants.includes(senderUserActive) && chat.participants.includes(receiverUserActive)) {
+                        return {...chat, active: true, receiverName: receiverName};
                     }
                     else {
-                        return {...chat, active: false};
+                        const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
+                        return {...chat, active: false, receiverName: receiverName};
                     }
                 });
             };
-            
-            if(chatActive(chats, senderUser, receiverUser).filter(chat => chat.active).length > 0) {
-                setUIChatsList(chatActive);
+            const chatsVar = listOfChatsWithState(chats, senderUserArgument, receiverUserArgument);
+            if(chatsVar.filter(chat => chat.active === true).length > 0)
+            {
+                setUIChatsList([...uiChatsList, ...chatsVar]);
             }
             else {
-                createChat(senderUser, receiverUser);
+                setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData), ...chatsVar]);
             }
 
         }
         else {
-            createChat(senderUser, receiverUser);
+            setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData)]);
         }
     }
     useEffect(() => {
-        
+        async function fetchReceiverUser() {
+            const usersRef = doc(db, "users", users.receiver);
+            const docSnap = await getDoc(usersRef);
+            // const querySnapshot = await getDocs(queryRef);
+            if(docSnap.exists) {
+                setReceiverUser({id: docSnap.id, ...docSnap.data()});
+            }
+        }
+        fetchReceiverUser();
+    }, [users]);
+
+    useEffect(() => {
         async function fetchData() {
             const chatsRef = collection(db, "chats");
             const q = query(chatsRef, where('participants', 'array-contains-any', [users.sender, users.receiver]));
@@ -100,36 +117,33 @@ const Chats = () => {
                     ...doc.data()
                 }
             });
+
             if(userChats.length > 0) {
-                setChats(userChats);
                 setEmptyChats(false);
-                setUIChats(userChats, users.sender, users.receiver);
+                
+                
             }
             else {
                 setEmptyChats(true);
             }
+            setChats(userChats);
         }
-
-        async function fetchReceiverUser() {
-            const usersRef = doc(db, "users", users.receiver);
-            const docSnap = await getDoc(usersRef);
-            // const querySnapshot = await getDocs(queryRef);
-            if(docSnap.exists) {
-                setReceiverUser(docSnap.data())
-            }
-        }
-        
-        // console.log(users.receiver)
-        fetchReceiverUser();
-        fetchData();
-        // setChats();
-        
+        fetchData();        
     }, [users]);
+    
+    useEffect(() => {
+        if(receiverUser && currentUserData && chats !== null) {
+            const receiverUserData = receiverUser;
+            setUIChats(chats, users.sender, users.receiver, currentUserData, receiverUserData);
+        }
+    }, [receiverUser, chats, currentUserData]);
 
     useEffect(() => {
-        console.log(receiverUser)
-        console.log(chats)
-    }, [receiverUser, chats]);
+        if(uiChatsList.length > 0) {
+            console.log(uiChatsList);
+        }
+    }, [uiChatsList]);
+    
     return (
         <div>
         <Box sx={{ flexGrow: 1, marginTop: "20px" }}>
@@ -142,33 +156,27 @@ const Chats = () => {
           <Grid container component={Paper} className={classes.chatSection}>
           <Divider />
               <Grid item xs={3} className={classes.borderRight500}>
-                {chats.length > 0 || emptyChats  ? 
+                {uiChatsList  ? 
                     <List>
-                    <ListItemButton  selected key="RemySharp">
-                        <ListItemIcon>
-                            <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Remy Sharp">Remy Sharp</ListItemText>
-                    </ListItemButton>
-                    <ListItemButton key="Alice">
-                        <ListItemIcon>
-                            <Avatar alt="Alice" src="https://material-ui.com/static/images/avatar/3.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Alice">Alice</ListItemText>
-                    </ListItemButton>
-                    <ListItemButton key="CindyBaker">
-                        <ListItemIcon>
-                            <Avatar alt="Cindy Baker" src="https://material-ui.com/static/images/avatar/2.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Cindy Baker">Cindy Baker</ListItemText>
-                    </ListItemButton>
-                </List> : null}
+                        {uiChatsList.map(chat => {
+                            return (
+                                <ListItem button selected={chat.active} key={chat.id} >
+                                    <ListItemIcon>
+                                    <Avatar alt={chat.receiverName} src="https://" />
+                                    </ListItemIcon>
+                                    <ListItemText primary={chat.receiverName}>{chat.receiverName}</ListItemText>
+                                </ListItem>
+                            )
+                        })}
+                </List> : "No hay chats"}
                 {
                     emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
                 }
               </Grid>
               <Grid item xs={9}>
                   <List className={classes.messageArea}>
+                      {uiChatsList ? 
+                      <div>
                       <ListItem key="1">
                           <Grid container>
                               <Grid item xs={12}>
@@ -198,7 +206,19 @@ const Chats = () => {
                                   <ListItemText align="right" secondary="10:30"></ListItemText>
                               </Grid>
                           </Grid>
-                      </ListItem>
+                      </ListItem> 
+                      <ListItem key="4">
+                          <Grid container>
+                              <Grid item xs={12}>
+                                  <ListItemText align="right" primary="Cool. i am good, let's catch up!"></ListItemText>
+                              </Grid>
+                              <Grid item xs={12}>
+                                  <ListItemText align="right" secondary="10:30"></ListItemText>
+                              </Grid>
+                          </Grid>
+                      </ListItem> 
+                      
+                      </div>:null}
                   </List>
                   <Divider />
                   <Grid container style={{padding: '20px'}}>
