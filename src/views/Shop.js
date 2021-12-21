@@ -116,7 +116,7 @@ const Shop = () => {
                         <Box sx={{ display: 'flex', flexDirection: 'row', width: "100%" }}>
                             <CardMedia
                             component="img"
-                            sx={{ width: "30%"}}
+                            sx={{ width: "30%", height: '178px'}}
                             image={card.image}
                             alt="Live from space album cover"
                             />
