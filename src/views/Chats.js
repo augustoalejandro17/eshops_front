@@ -22,7 +22,6 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "context/AuthContext"
 import { collection, query, where, getDocs, doc, getDoc, addDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase.js"
-import { set } from 'react-hook-form';
 
 const styles = ({
     table: {
@@ -76,6 +75,8 @@ const Chats = () => {
                         if(chat.messages && chat.messages.length > 0) {
                             setCurrentMessageList(chat.messages);
                         }
+                        else
+                            setCurrentMessageList([]);
                         setCurrentChatRef(chat.id);
                         return {...chat, active: true, receiverName: receiverName};
                     }
