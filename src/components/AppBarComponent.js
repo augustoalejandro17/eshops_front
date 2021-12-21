@@ -205,41 +205,14 @@ const DefaultAppBar = (props) => {
                 variant="h6"
                 noWrap
                 component="div"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
+                sx={{ display: { xs: 'flex', sm: 'flex' } }}
                 >
                 Atina
                 </Typography>
             </Link>
-            {/* <Search style={{ color: 'black' }}variant="outlined">
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                style={{ color: 'black', marginColor: 'black' }}
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search> */}
+           
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                {/* <Link style={{ textDecoration: "none" }} 
-                    to={`/chats`}
-                > 
-                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="error" style={{ color: 'black' }}>
-                        <MailIcon />
-                        </Badge>
-                    </IconButton>
-                </Link> */}
-              {/* <IconButton
-                size="large"
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={17} color="error" style={{ color: 'black' }}>
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton> */}
               <Link style={{ textDecoration: "none" }} 
                     to={`/cart`}
                 > 
@@ -283,7 +256,7 @@ const DefaultAppBar = (props) => {
               </IconButton>
             </Box>
             </Toolbar>
-          </AppBar>
+        </AppBar>
         <Toolbar id="back-to-top-anchor" />
         {renderMobileMenu}
         {renderMenu}

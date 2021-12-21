@@ -43,18 +43,25 @@ const styles = ({
 });
 
 const Chats = () => {
+    const classes = useClasses(styles);
+    
     const [chats, setChats] = useState(null);
     const [emptyChats, setEmptyChats] = useState(false);
-    const { currentUserData } = useAuth();
-    const [uiChatsList, setUIChatsList] = useState([]);
     const [currentChatRef, setCurrentChatRef] = useState(null);
-    const [currentMessageList, setCurrentMessageList] = useState([]);
-    const [receiverUser, setReceiverUser] = useState(null);
     const [message, setMessage] = useState('');
-    const classes = useClasses(styles);
-    const location = useLocation();
-    const users = location.state.users;
+    
+    const [uiChatsList, setUIChatsList] = useState([]);
+    const [currentMessageList, setCurrentMessageList] = useState([]);
+    const [senderRef, setSenderRef] = useState(null);
+    const [receiverRef, setReceiverRef] = useState(null);
 
+    const location = useLocation();
+    const users = location.state ? location.state.users : null;
+    
+    const { currentUserData } = useAuth();
+    
+    const [receiverUserData, setReceiverUserData] = useState(null);
+    
     async function createChat(senderUserArgument, receiverUserArgument, senderData, receiverData) {
         const chatsRef = collection(db, "chats");
         const newChat = {
@@ -65,56 +72,81 @@ const Chats = () => {
         setCurrentChatRef(docRef.id)
         return { ...newChat, active: true, receiverName: receiverData.name, id: docRef.id };
     };
+    
+    function listOfChatsWithState(chatsActive, senderUserActive, receiverUserActive){
+        return chatsActive.map(chat => { 
+            const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
+            if(chat.participants.includes(senderUserActive) && chat.participants.includes(receiverUserActive)) {
+                if(chat.messages && chat.messages.length > 0) {
+                    setCurrentMessageList(chat.messages);
+                }
+                else
+                    setCurrentMessageList([]);
+                setCurrentChatRef(chat.id);
+                return {...chat, active: true, receiverName: receiverName};
+            }
+            else {
+                return {...chat, active: false, receiverName: receiverName};
+            }
+        });
+    };
 
     function setUIChats(chats, senderUserArgument, receiverUserArgument, senderData, receiverData ) {
         if(chats.length > 0) {
-            const listOfChatsWithState = (chatsActive, senderUserActive, receiverUserActive) => {
-                return chatsActive.map(chat => { 
-                    const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
-                    if(chat.participants.includes(senderUserActive) && chat.participants.includes(receiverUserActive)) {
-                        if(chat.messages && chat.messages.length > 0) {
-                            setCurrentMessageList(chat.messages);
-                        }
-                        else
-                            setCurrentMessageList([]);
-                        setCurrentChatRef(chat.id);
-                        return {...chat, active: true, receiverName: receiverName};
-                    }
-                    else {
-                        const receiverName =  chat.participantsData.filter(participant => participant.id !== senderUserActive)[0].name;
-                        return {...chat, active: false, receiverName: receiverName};
-                    }
-                });
-            };
+            
             const chatsVar = listOfChatsWithState(chats, senderUserArgument, receiverUserArgument);
             if(chatsVar.filter(chat => chat.active === true).length > 0)
             {
                 setUIChatsList([...uiChatsList, ...chatsVar]);
             }
             else {
-                setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData), ...chatsVar]);
+                if(receiverUserArgument)
+                    setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData), ...chatsVar]);
+                else
+                    setUIChatsList([...uiChatsList, ...chatsVar]);
             }
 
         }
         else {
-            setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData)]);
+            if(receiverUserArgument)
+                setUIChatsList([...uiChatsList, createChat(senderUserArgument, receiverUserArgument, senderData, receiverData)]);
+            else
+                setUIChatsList([...uiChatsList]);
         }
     }
+
+
+    useEffect(() => {
+        if(users) {
+            setSenderRef(users.sender);
+            setReceiverRef(users.receiver);
+        }
+  
+    }, [users]);
+
+    useEffect(() => {
+        if(currentUserData) {
+            setSenderRef(currentUserData.id);
+        }        
+    }, [currentUserData]);
+
     useEffect(() => {
         async function fetchReceiverUser() {
-            const usersRef = doc(db, "users", users.receiver);
+            const usersRef = doc(db, "users", receiverRef);
             const docSnap = await getDoc(usersRef);
             if(docSnap.exists) {
-                setReceiverUser({id: docSnap.id, ...docSnap.data()});
+                setReceiverUserData({id: docSnap.id, ...docSnap.data()});
             }
         }
-        fetchReceiverUser();
-    }, [users]);
+        if(receiverRef) {
+            fetchReceiverUser();
+        }
+    }, [receiverRef]);
 
     useEffect(() => {
         async function fetchData() {
             const chatsRef = collection(db, "chats");
-            const q = query(chatsRef, where('participants', 'array-contains-any', [users.sender, users.receiver]));
+            const q = query(chatsRef, where('participants', 'array-contains-any', [senderRef, receiverRef]));
             const querySnapshot  = await getDocs(q);
             const userChats = querySnapshot.docs.map(doc => {
                 return {
@@ -132,21 +164,16 @@ const Chats = () => {
             }
             setChats(userChats);
         }
-        fetchData();        
-    }, [users]);
+        if(senderRef || receiverRef) {
+            fetchData(); 
+        }       
+    }, [senderRef, receiverRef]);
     
     useEffect(() => {
-        if(receiverUser && currentUserData && chats !== null) {
-            const receiverUserData = receiverUser;
-            setUIChats(chats, users.sender, users.receiver, currentUserData, receiverUserData);
+        if(currentUserData && chats !== null) {
+            setUIChats(chats, senderRef, receiverRef, currentUserData, receiverUserData);
         }
-    }, [receiverUser, chats, currentUserData]);
-
-    useEffect(() => {
-        if(uiChatsList.length > 0) {
-            console.log(uiChatsList);
-        }
-    }, [uiChatsList]);
+    }, [receiverUserData, chats, currentUserData]);
 
     function sendMessage(message, senderRef, date) {
         async function updateMessages(messageVar, senderRefVar, dateVar) {
@@ -166,7 +193,12 @@ const Chats = () => {
         }        
         updateMessages(message, senderRef, date);
     }
-    
+    function chatClicked(chat) {
+        setCurrentChatRef(chat.id);
+        setCurrentMessageList(chat.messages);
+        console.log(chat)
+        console.log(uiChatsList)
+    }
     return (
         <div>
             <Box sx={{ flexGrow: 1, marginTop: "20px" }}>
@@ -183,7 +215,7 @@ const Chats = () => {
                         <List>
                             {uiChatsList.map(chat => {
                                 return (
-                                    <ListItem button selected={chat.active} key={chat.id} >
+                                    <ListItem button selected={chat.active} key={chat.id} onClick={()=>{chatClicked(chat)}}>
                                         <ListItemIcon>
                                         <Avatar alt={chat.receiverName} src="https://" />
                                         </ListItemIcon>
@@ -200,8 +232,7 @@ const Chats = () => {
                     <List className={classes.messageArea}>
                         {currentMessageList.length > 0 ? 
                             currentMessageList.map(message => {
-                                console.log(message.sender === users.sender)
-                               const messagePosition = message.sender === users.sender ? "left" : "right";
+                               const messagePosition = message.sender === senderRef ? "left" : "right";
                                 return (
                                     <ListItem key={message.id}>
                                         <Grid container>
@@ -231,7 +262,7 @@ const Chats = () => {
                             <TextField id="outlined-basic-email" label="Type Something" fullWidth onChange={e=>{setMessage(e.target.value)}}/>
                         </Grid>
                         <Grid item xs={1} align="right">
-                            <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, users.sender, new Date())}}><SendIcon /></Fab>
+                            <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, senderRef, new Date())}}><SendIcon /></Fab>
                         </Grid>
                     </Grid>
                 </Grid>
