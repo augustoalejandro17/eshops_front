@@ -213,14 +213,29 @@ const DefaultAppBar = (props) => {
            
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Link style={{ textDecoration: "none" }} 
+                <Link style={{ textDecoration: "none" }} 
+                    to={`/chats`}
+                > 
+                    <IconButton
+                        style={{ color: 'black' }}
+                        size="large"
+                        edge="end"
+                        aria-label="messages of current user"
+                        aria-controls={menuId}
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                        <MailIcon />
+                    </IconButton>
+                </Link>
+                <Link style={{ textDecoration: "none" }} 
                     to={`/cart`}
                 > 
                     <IconButton
                         style={{ color: 'black' }}
                         size="large"
                         edge="end"
-                        aria-label="account of current user"
+                        aria-label="cart of current user"
                         aria-controls={menuId}
                         aria-haspopup="true"
                         color="inherit"

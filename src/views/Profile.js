@@ -32,7 +32,7 @@ const Profile = (props) => {
     const { userRef } = useAuth();
     const { userId } = useParams();
 
-    const senderData = useAuth().userData;
+    const { currentUserData } = useAuth();
 
     const classes = useClasses(styles);
     const { ...rest } = props;
@@ -49,11 +49,14 @@ const Profile = (props) => {
 
     return (
         <div>
-        <Parallax
+		<Parallax
             small
             filter
             image={require("assets/img/profile-bg.jpg").default}
         />
+		{currentUserData ? (
+			<div>
+        
             <div className={classNames(classes.main, classes.mainRaised)}>
             <div>
             <div className={classes.container}>
@@ -69,7 +72,7 @@ const Profile = (props) => {
                         <img src={profile} alt="..." className={imageClasses} />
                     </div>
                     <div className={classes.name}>
-                        <h3 className={classes.title}>Christian Louboutin</h3>
+                        <h3 className={classes.title}>{currentUserData.name}</h3>
                     </div>
                     </div>
                 </GridItem>
@@ -111,12 +114,7 @@ const Profile = (props) => {
                 <GridItem xs={12} sm={12} md={6}>
                     <div className={classes.description}>
                         <p>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                        when an unknown printer took a galley of type and scrambled it to make a type 
-                        specimen book. It has survived not only five centuries, but also the leap into 
-                        electronic typesetting, remaining essentially unchanged. It was popularised in 
-                        the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.{" "}
+							{currentUserData.description ? currentUserData.description : "No hay descripción"}
                         </p>
                     </div>
                     </GridItem>
@@ -140,7 +138,8 @@ const Profile = (props) => {
                 </GridContainer>
             </div>
             </div>
-        </div>
+			</div>
+        </div>): null}
         </div>
     );
 }
