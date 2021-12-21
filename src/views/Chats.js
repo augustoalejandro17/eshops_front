@@ -20,7 +20,7 @@ import Fab from '@mui/material/Fab';
 import SendIcon from '@mui/icons-material/Send';
 import { useLocation } from "react-router-dom";
 import { useAuth } from "context/AuthContext"
-import { collection, query, where, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, addDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase.js"
 import { set } from 'react-hook-form';
 
@@ -51,6 +51,7 @@ const Chats = () => {
     const [currentChatRef, setCurrentChatRef] = useState(null);
     const [currentMessageList, setCurrentMessageList] = useState([]);
     const [receiverUser, setReceiverUser] = useState(null);
+    const [message, setMessage] = useState('');
     const classes = useClasses(styles);
     const location = useLocation();
     const users = location.state.users;
@@ -62,8 +63,8 @@ const Chats = () => {
             participantsData: [senderData, receiverData],
         }
         const docRef = await addDoc(chatsRef, newChat);
-        setCurrentChatRef(docRef)
-        return { ...newChat, active: true, receiverName: receiverData.name };
+        setCurrentChatRef(docRef.id)
+        return { ...newChat, active: true, receiverName: receiverData.name, id: docRef.id };
     };
 
     function setUIChats(chats, senderUserArgument, receiverUserArgument, senderData, receiverData ) {
@@ -75,6 +76,7 @@ const Chats = () => {
                         if(chat.messages && chat.messages.length > 0) {
                             setCurrentMessageList(chat.messages);
                         }
+                        setCurrentChatRef(chat.id);
                         return {...chat, active: true, receiverName: receiverName};
                     }
                     else {
@@ -101,7 +103,6 @@ const Chats = () => {
         async function fetchReceiverUser() {
             const usersRef = doc(db, "users", users.receiver);
             const docSnap = await getDoc(usersRef);
-            // const querySnapshot = await getDocs(queryRef);
             if(docSnap.exists) {
                 setReceiverUser({id: docSnap.id, ...docSnap.data()});
             }
@@ -124,7 +125,6 @@ const Chats = () => {
             if(userChats.length > 0) {
                 setEmptyChats(false);
                 
-                
             }
             else {
                 setEmptyChats(true);
@@ -146,103 +146,96 @@ const Chats = () => {
             console.log(uiChatsList);
         }
     }, [uiChatsList]);
+
+    function sendMessage(message, senderRef, date) {
+        async function updateMessages(messageVar, senderRefVar, dateVar) {
+            const stringDate = (dateVar.getDate() + "/" + dateVar.getMonth() +  "/" + dateVar.getFullYear() + " " + dateVar.getHours() + ":" + dateVar.getMinutes()); 
+            const chatRef = doc(db, "chats", currentChatRef);
+            
+            const newMessage = {
+                sender: senderRefVar,
+                message: messageVar,
+                date: Timestamp.fromDate(dateVar),
+                stringDate: stringDate,
+                id: currentMessageList.length + 1
+            }
+            const messageList = currentMessageList.concat(newMessage);
+            setCurrentMessageList(messageList);
+            await updateDoc(chatRef, {messages: messageList});
+        }        
+        updateMessages(message, senderRef, date);
+    }
     
     return (
         <div>
-        <Box sx={{ flexGrow: 1, marginTop: "20px" }}>
-          <Grid container>
-              <Grid item xs={12} >
-                  <Typography variant="h5" className="header-message">Mensajes</Typography>
-              </Grid>
-          </Grid>
-          <Divider sx={{ marginTop: "20px" }}/>
-          <Grid container component={Paper} className={classes.chatSection}>
-          <Divider />
-              <Grid item xs={3} className={classes.borderRight500}>
-                {uiChatsList  ? 
-                    <List>
-                        {uiChatsList.map(chat => {
-                            return (
-                                <ListItem button selected={chat.active} key={chat.id} >
-                                    <ListItemIcon>
-                                    <Avatar alt={chat.receiverName} src="https://" />
-                                    </ListItemIcon>
-                                    <ListItemText primary={chat.receiverName}>{chat.receiverName}</ListItemText>
-                                </ListItem>
-                            )
-                        })}
-                </List> : "No hay chats"}
-                {
-                    emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
-                }
-              </Grid>
-              <Grid item xs={9}>
-                  <List className={classes.messageArea}>
-                      {currentMessageList.length > 0 ? 
-                      <div>
-                      <ListItem key="1">
-                          <Grid container>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" primary="Hey man, What's up ?"></ListItemText>
-                              </Grid>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" secondary="09:30"></ListItemText>
-                              </Grid>
-                          </Grid>
-                      </ListItem>
-                      <ListItem key="2">
-                          <Grid container>
-                              <Grid item xs={12}>
-                                  <ListItemText align="left" primary="Hey, Iam Good! What about you ?"></ListItemText>
-                              </Grid>
-                              <Grid item xs={12}>
-                                  <ListItemText align="left" secondary="09:31"></ListItemText>
-                              </Grid>
-                          </Grid>
-                      </ListItem>
-                      <ListItem key="3">
-                          <Grid container>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" primary="Cool. i am good, let's catch up!"></ListItemText>
-                              </Grid>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" secondary="10:30"></ListItemText>
-                              </Grid>
-                          </Grid>
-                      </ListItem> 
-                      <ListItem key="4">
-                          <Grid container>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" primary="Cool. i am good, let's catch up!"></ListItemText>
-                              </Grid>
-                              <Grid item xs={12}>
-                                  <ListItemText align="right" secondary="10:30"></ListItemText>
-                              </Grid>
-                          </Grid>
-                      </ListItem> 
-                      
-                      </div>:
-                        <ListItem key="1">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
+            <Box sx={{ flexGrow: 1, marginTop: "20px" }}>
+            <Grid container>
+                <Grid item xs={12} >
+                    <Typography variant="h5" className="header-message">Mensajes</Typography>
+                </Grid>
+            </Grid>
+            <Divider sx={{ marginTop: "20px" }}/>
+            <Grid container component={Paper} className={classes.chatSection}>
+            <Divider />
+                <Grid item xs={3} className={classes.borderRight500}>
+                    {uiChatsList  ? 
+                        <List>
+                            {uiChatsList.map(chat => {
+                                return (
+                                    <ListItem button selected={chat.active} key={chat.id} >
+                                        <ListItemIcon>
+                                        <Avatar alt={chat.receiverName} src="https://" />
+                                        </ListItemIcon>
+                                        <ListItemText primary={chat.receiverName}>{chat.receiverName}</ListItemText>
+                                    </ListItem>
+                                )
+                            })}
+                    </List> : "No hay chats"}
+                    {
+                        emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
+                    }
+                </Grid>
+                <Grid item xs={9}>
+                    <List className={classes.messageArea}>
+                        {currentMessageList.length > 0 ? 
+                            currentMessageList.map(message => {
+                                console.log(message.sender === users.sender)
+                               const messagePosition = message.sender === users.sender ? "left" : "right";
+                                return (
+                                    <ListItem key={message.id}>
+                                        <Grid container>
+                                            <Grid item xs={12}>
+                                                <ListItemText align={messagePosition} primary={message.message}/>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <ListItemText align={messagePosition} secondary={message.stringDate}/>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                )
+                            })
+                        :
+                            <ListItem key="1">
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </ListItem>
-                      }
-                  </List>
-                  <Divider />
-                  <Grid container style={{padding: '20px'}}>
-                      <Grid item xs={11}>
-                          <TextField id="outlined-basic-email" label="Type Something" fullWidth />
-                      </Grid>
-                      <Grid item xs={1} align="right">
-                          <Fab color="primary" aria-label="add"><SendIcon /></Fab>
-                      </Grid>
-                  </Grid>
-              </Grid>
-          </Grid>
-          </Box>
+                            </ListItem>
+                        }
+                    </List>
+                    <Divider />
+                    <Grid container style={{padding: '20px'}}>
+                        <Grid item xs={11}>
+                            <TextField id="outlined-basic-email" label="Type Something" fullWidth onChange={e=>{setMessage(e.target.value)}}/>
+                        </Grid>
+                        <Grid item xs={1} align="right">
+                            <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, users.sender, new Date())}}><SendIcon /></Fab>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            </Box>
         </div>
     );
 }
