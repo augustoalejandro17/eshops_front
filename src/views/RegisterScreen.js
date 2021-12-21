@@ -146,16 +146,16 @@ const RegisterScreen = (props) => {
                             alignItems="center"
                             justifyContent="center" 
                         >
-                        <Button simple color="primary" size="lg" onClick={handleRegister}>
+                        <Button outlined color="primary" size="lg" onClick={handleRegister}>
                             Registrarse
                         </Button>
+                        o 
                         <Muted>
-                            or  
-                            <Button simple color="primary" size="lg">
-                                <NavLink style={{ textDecoration: "none", color: "gray" }} to={`/login`}>  
-                                    login
-                                </NavLink>
-                            </Button>
+
+                        <GridItem xs={12} sm={12} md={12}>
+                          Si es que tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/login">ingresa</Link>  
+                        
+                        </GridItem>
                         </Muted>
                         
                         </GridContainer>

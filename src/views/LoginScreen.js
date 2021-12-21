@@ -70,8 +70,7 @@ const LoginScreen = (props) => {
           }}
         >
           <div className={classes.container}>
-            <GridContainer justify="center"
-                        // direction="column"
+            <GridContainer // direction="column"
                         alignItems="center"
                         justifyContent="center" 
                         justify="center"
@@ -122,10 +121,22 @@ const LoginScreen = (props) => {
                         }}
                       />
                     </CardBody>
-                    <CardFooter className={classes.cardFooter}>
-                      <Button simple color="primary" size="lg" onClick={handleLogin}>
-                        Iniciar Sesión
-                      </Button>
+                    <CardFooter >
+                      	<GridContainer direction="column"
+                        alignItems="center"
+                        justifyContent="center" 
+                        justify="center"	
+						>
+							
+						<Button outlined color="primary" size="lg" onClick={handleLogin}>
+							Iniciar Sesión
+						</Button>
+						o
+						<GridItem xs={12} sm={12} md={12}>
+						Si es que no tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/register">registrate</Link>  
+						
+						</GridItem>
+					  </GridContainer>
                     </CardFooter>
                   </form>
                 </Card>
