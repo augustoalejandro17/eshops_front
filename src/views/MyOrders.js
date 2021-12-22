@@ -60,12 +60,17 @@ const MyOrders = (props) => {
     console.log(userRef);
 	
 	useEffect(() => {
-		// async function fetchOrders() {		
-		// 	const queryVar = query(collection(db, "orders"), where("shopId", "==", shopObject.index));
-		// }
+		async function fetchOrders() {		
+			const queryVar = query(collection(db, "orders"), where("client.id", "==", userRef));
+			await getDocs(queryVar).then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					console.log(doc.data());
+				});				
+			});
+		}
 
-		if(false){
-			// fetchOrders();
+		if(userRef){
+			fetchOrders();
 
 		}
 	}, [userRef]);
