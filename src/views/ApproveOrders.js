@@ -14,6 +14,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import { db } from "../firebase.js"
 import { arrayUnion, collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore"; 
 import { useAuth } from "context/AuthContext"
+import OrdersTable from 'components/OrdersTable.js';
 
 function createData(id, client, products, date, totalValue, status, actions) {
   return { id, client, products, date, totalValue, status, actions };
@@ -37,6 +38,7 @@ async function declineOrder(id, permissionsRef){
 	const orderRef = doc(db, "orders", id);
 	await updateDoc(orderRef, { status: "declined" });
 }
+
 const roundButtons = (id, permissionsRef, productId) => {
 
 const icons = [{ color: "info", icon: FilePresentIcon },
@@ -63,7 +65,8 @@ const icons = [{ color: "info", icon: FilePresentIcon },
 export default function ApproveOrders() {
 	const [orders, setOrders] = useState([]);
 	const { userRef } = useAuth();
-	const [data, setData] = useState();
+	const [data, setData] = useState([]);
+    const [rows, setRows] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -90,38 +93,31 @@ export default function ApproveOrders() {
 			setData(dataToSet);
 		}
 	}, [orders]);
+	
+	const headers = useMemo(
+		() => ["Cliente", "Producto", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
+		, []
+	);
+
+    useEffect(() => {
+        const rowsToSet = data.map((row) => (
+            <TableRow
+            key={row.id}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+                <TableCell  align="center"> {row.client} </TableCell>
+                <TableCell align="center">{row.products}</TableCell>
+                <TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
+                <TableCell align="center">${row.totalValue}</TableCell>
+                <TableCell align="center">{row.status}</TableCell>
+                <TableCell align="center">{row.actions}</TableCell>
+            </TableRow>
+        ))
+        setRows(rowsToSet);
+    }, [data]);
+    
 
 	return (
-		<TableContainer component={Paper}>
-			{data ? <Table sx={{ minWidth: 650 }} aria-label="simple table">
-				<TableHead>
-				<TableRow>
-					<TableCell align="center">Cliente</TableCell>
-					<TableCell align="center">Producto(s) adquirido(s)</TableCell>
-					<TableCell align="center">Fecha de la orden</TableCell>
-					<TableCell align="center">Valor total</TableCell>
-					<TableCell align="center">Estado de la orden</TableCell>
-					<TableCell align="center">Acciones</TableCell>
-				</TableRow>
-				</TableHead>
-				<TableBody>
-				{data.map((row) => (
-					<TableRow
-					key={row.id}
-					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-					>
-					<TableCell component="th" scope="row" align="center">
-						{row.client}
-					</TableCell>
-					<TableCell align="center">{row.products}</TableCell>
-					<TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
-					<TableCell align="center">${row.totalValue}</TableCell>
-					<TableCell align="center">{row.status}</TableCell>
-					<TableCell align="center">{row.actions}</TableCell>
-					</TableRow>
-				))}
-				</TableBody>
-			</Table> : null}
-		</TableContainer>
-  );
+		<OrdersTable headers={headers} rows={rows} /> 
+  	);
 }
