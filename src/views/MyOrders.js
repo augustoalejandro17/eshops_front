@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -10,14 +10,15 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import { useAuth } from "context/AuthContext"
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, doc, getDocs, updateDoc } from "firebase/firestore";
+import FilePresentIcon from '@mui/icons-material/FilePresent';
+import Close from "@mui/icons-material/Close";
 import { db } from "../firebase.js"
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import OrdersTable from 'components/OrdersTable';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 
-var cardsPending = [{index: 1, productName: 'Card One', status: 'payment-pending', productImage: 'https://source.unsplash.com/random'}];
-
-var cardsPayed = [{index: 1, productName: 'Card One', status: 'payed', productImage: 'https://source.unsplash.com/random'}];
 
 var cardsFailed = [{index: 1, title: 'Card Two', status: 'cancelled', productImage: 'https://source.unsplash.com/random'},      
                     {index: 2, title: 'Card Nine', status: 'payment-refused', productImage: 'https://source.unsplash.com/random'}];
@@ -56,33 +57,137 @@ function TabPanel(props) {
   }
 
 const MyOrders = (props) => {
-    const [value, setValue] = React.useState(0);
-    const { userRef } = useAuth();
+    const [tabValue, setTabValue] = React.useState(0);
+	const { userRef } = useAuth();
+	const [orders, setOrders] = useState([]);
 	
+	const [ordersFailed, setOrdersFailed] = useState([]);
+	const [ordersPending, setOrdersPending] = useState([]);
+	const [ordersCompleted, setOrdersCompleted] = useState([]);
+
+	const [data, setData] = useState([]);
+    const [rows, setRows] = useState(null);
+
+	async function cancelOrder(id){
+		const orderRef = doc(db, "orders", id);
+		await updateDoc(orderRef, { status: "canceled" });
+		console.log("Order canceled");
+	}
+	
+	function createData(id, products, date, totalValue, status, actions) {
+		return { id, products, date, totalValue, status, actions };
+	}
+
+	const roundButtons = (id, permissionsRef, orderStatus, productId) => {
+
+		const icons = [{ color: "info", icon: FilePresentIcon },
+		{ color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { cancelOrder(orderId) } }
+		].map((prop, key) => {
+			return (		
+				<Button
+					key={key}
+					round
+					justIcon
+					color={prop.color}
+					size="sm"
+					onClick={() => { prop.onclick(prop.id, prop.userPermissionsRef, prop.productId) }}
+				>
+					<prop.icon />
+				</Button>
+			)
+		})
+		return icons;	
+	}
+
 	useEffect(() => {
 		async function fetchOrders() {		
 			const queryVar = query(collection(db, "orders"), where("clientId", "==", userRef));
-			await getDocs(queryVar).then((querySnapshot) => {
-				// console.log(querySnapshot);
-				querySnapshot.forEach((doc) => {
-					console.log(doc.data());
-				});				
-			});
-		}
-
+			const querySnapshot  = await getDocs(queryVar);
+			var ordersObject = [];
+			if(querySnapshot){
+				await querySnapshot.forEach((doc) => {
+		
+					ordersObject = 	[...ordersObject, { ...doc.data(), id: doc.id }];	
+				});
+				setOrders(ordersObject);
+			}
+		};
 		if(userRef){
 			fetchOrders();
-
 		}
 	}, [userRef]);
 
+	useEffect(() => {
+		if(orders.length > 0){
+			const dataToSet = orders.map((order) => {
+				let productNames = order.products.map((product) => product.name);
+				let productIds = order.products.map((product) => product.id);
+				return	createData(order.id, productNames, order.date, order.totalValue, order.status, roundButtons(order.id, order.client.permissions, order.status, productIds));
+			})	
+			if (dataToSet) {
+				(dataToSet.forEach((order) => {
+					switch (order.status) {
+						case "pending":
+							setOrdersPending([...ordersPending, order]);
+							break;
+						case "completed":
+							setOrdersCompleted([...ordersCompleted, order]);
+							break;
+						case "canceled":
+							setOrdersFailed([...ordersFailed, order]);
+							break;
+						case "payment-refused":
+							setOrdersFailed([...ordersFailed, order]);
+							break;
+						default:
+							setOrdersFailed([...ordersFailed, order]);
+							break;
+					}
+				}))
+			}
+			
+		}
+	}, [orders]);
+
 	const handleChange = (event, newValue) => {
-		setValue(newValue);
+		setTabValue(newValue);
 	};
 
 	const headers = useMemo(
 		() => ["Producto", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
 	, []);
+
+	useEffect(() => {
+		let currentTab = ordersPending;
+		switch (tabValue) {
+			case 0:
+				currentTab = ordersPending;
+				break;
+			case 1:
+				currentTab = ordersCompleted;
+				break;
+			case 2:
+				currentTab = ordersFailed;
+				break;
+			default:
+				currentTab = ordersPending;
+				break;
+		}
+
+        const rowsToSet = currentTab.map((row) => (
+            <TableRow
+            key={row.id}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+                <TableCell align="center">{row.products}</TableCell>
+                <TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
+                <TableCell align="center">${row.totalValue}</TableCell>
+                <TableCell align="center">{row.status}</TableCell>
+                <TableCell align="center">{row.actions}</TableCell>
+            </TableRow>
+        ))
+        setRows(rowsToSet);
+    }, [tabValue, ordersCompleted, ordersFailed, ordersPending]);
 
 	return (
 		<div>
@@ -93,7 +198,7 @@ const MyOrders = (props) => {
 					justify="center"
 			>	
 				<Box>
-					<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+					<Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example">
 						<Tab label="Ordenes pendientes" {...a11yProps(0)} />
 						<Tab label="Mis ordenes activas" {...a11yProps(1)} />
 						<Tab label="Ordenes fallidas" {...a11yProps(2)} />
@@ -102,62 +207,14 @@ const MyOrders = (props) => {
 			</GridContainer>
 		</Box>
 		<div>
-			<TabPanel value={value} index={0}>
-				<OrdersTable headers={headers} rows={null} />
+			<TabPanel value={tabValue} index={0}>
+				<OrdersTable headers={headers} rows={rows} />
 			</TabPanel>
-			<TabPanel value={value} index={1}>
-				b
+			<TabPanel value={tabValue} index={1}>
+				<OrdersTable headers={headers} rows={rows} />
 			</TabPanel>
-			<TabPanel value={value} index={2}>
-				<Container sx={{ py: 8 }} maxWidth="lg">
-
-					<Grid container spacing={4} 
-						direction="row"
-						justifyContent="center"
-						alignItems="center"
-					>
-					{cardsFailed.map((card) => (
-						<Grid item key={card.index} xs={12} sm={12} md={12}>  
-							<Card
-							sx={{ height: '100%', display: 'flex' }}
-							>
-							
-							
-							<Box sx={{ display: 'flex', flexDirection: 'row', width: "100%" }}>
-								{/* <CardActionArea> */}
-								<CardMedia
-								component="img"
-								sx={{ width: "30%", height: 'auto', maxHeight: '250px'}}
-								image={card.productImage}
-								alt="Image"
-								/>
-								{/* </CardActionArea> */}
-								<CardBody>
-									<Typography component="div" variant="h5">
-										Product Name
-									</Typography>
-									<Typography variant="body2" color="text.secondary">
-									<b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pulvinar 
-									vel nibh sit amet dignissim. Ut non vulputate purus. Etiam commodo tincidunt 
-									placerat. Cras ut lacus scelerisque, posuere mauris eget, mollis felis. Praesent 
-									volutpat congue lectus, sit amet gravida libero maximus sed. Mauris dui quam, 
-									vehicula id tellus eget, ultricies malesuada erat. Praesent porta elit eu augue 
-									accumsan condimentum. Maecenas quis velit placerat, accumsan ligula non, accumsan 
-									eros.
-									
-									</Typography>
-								<CardActions style={{display: "flex", justifyContent: "center"}}>
-
-									<Button size="small" color="info" >Ver</Button>
-								</CardActions>
-								</CardBody>
-							</Box>
-							
-							</Card>
-						</Grid>
-					))}
-					</Grid>
-				</Container>
+			<TabPanel value={tabValue} index={2}>
+				<OrdersTable headers={headers} rows={rows} />
 			</TabPanel>
 		</div>
 

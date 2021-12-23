@@ -1,12 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
+
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { Label } from '@mui/icons-material';
+
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Close from "@mui/icons-material/Close";
 import Button from "components/CustomButtons/Button.js";
@@ -41,7 +37,7 @@ async function declineOrder(id, permissionsRef){
 
 const roundButtons = (id, permissionsRef, productId) => {
 
-const icons = [{ color: "info", icon: FilePresentIcon },
+    const icons = [{ color: "info", icon: FilePresentIcon },
 	{ color: "success", icon: DoneIcon, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { confirmOrder(orderId, permissionsRef, productId) } },
 	{ color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { declineOrder(orderId) } }
 	].map((prop, key) => {
@@ -63,8 +59,8 @@ const icons = [{ color: "info", icon: FilePresentIcon },
 
 
 export default function ApproveOrders() {
-	const [orders, setOrders] = useState([]);
 	const { userRef } = useAuth();
+	const [orders, setOrders] = useState([]);
 	const [data, setData] = useState([]);
     const [rows, setRows] = useState(null);
 
