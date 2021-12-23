@@ -36,7 +36,8 @@ const ShoppingCart = () => {
             products: items.map(item => item),
             totalValue: items.reduce((acc, item) => acc + item.price, 0),
             date: Timestamp.fromDate(new Date()),
-            client: currentUserData
+            client: currentUserData,
+            clientId: currentUserData.id
         }
 
         setActiveStep(activeStep + 1);

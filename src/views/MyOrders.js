@@ -57,12 +57,12 @@ function TabPanel(props) {
 const MyOrders = (props) => {
     const [value, setValue] = React.useState(0);
     const { userRef } = useAuth();
-    console.log(userRef);
 	
 	useEffect(() => {
 		async function fetchOrders() {		
-			const queryVar = query(collection(db, "orders"), where("client.id", "==", userRef));
+			const queryVar = query(collection(db, "orders"), where("clientId", "==", userRef));
 			await getDocs(queryVar).then((querySnapshot) => {
+				// console.log(querySnapshot);
 				querySnapshot.forEach((doc) => {
 					console.log(doc.data());
 				});				
