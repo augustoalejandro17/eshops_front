@@ -73,6 +73,21 @@ const MyOrders = (props) => {
 		await updateDoc(orderRef, { status: "canceled" });
 		console.log("Order canceled");
 	}
+
+	const showPayment = (id, status) => {
+		const orderRef = doc(db, "orders", id);
+		// console.log(...ordersPending);
+		console.log(orders);
+
+		let paymentUploaded = false;
+		let paymentUrl = null;
+
+		console.log(orders.find(order => order.id === id));
+
+		
+		// await updateDoc(orderRef, { status: status });
+		// console.log("Order canceled");
+	}
 	
 	function createData(id, products, date, totalValue, status, actions) {
 		return { id, products, date, totalValue, status, actions };
@@ -80,7 +95,7 @@ const MyOrders = (props) => {
 
 	const roundButtons = (id, permissionsRef, orderStatus, productId) => {
 
-		const icons = [{ color: "info", icon: FilePresentIcon },
+		const icons = [{ color: "info", icon: FilePresentIcon, id: id, orderStatus: orderStatus, onclick: (orderId, currentStatus) => { showPayment(orderId, currentStatus); } },
 		{ color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { cancelOrder(orderId) } }
 		].map((prop, key) => {
 			return (		
@@ -90,7 +105,7 @@ const MyOrders = (props) => {
 					justIcon
 					color={prop.color}
 					size="sm"
-					onClick={() => { prop.onclick(prop.id, prop.userPermissionsRef, prop.productId) }}
+					onClick={() => { prop.onclick(prop.id, prop.orderStatus) }}
 				>
 					<prop.icon />
 				</Button>
@@ -157,6 +172,11 @@ const MyOrders = (props) => {
 		() => ["Producto", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
 	, []);
 
+	// useEffect(() => {
+	// 	console.log(ordersPending)
+	// }
+	// , [ordersPending])
+	
 	useEffect(() => {
 		let currentTab = ordersPending;
 		switch (tabValue) {
