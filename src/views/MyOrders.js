@@ -18,11 +18,22 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import OrdersTable from 'components/OrdersTable';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import useClasses from "components/UseClasses";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
+import Slide from "@mui/material/Slide";
+import { FormInputText } from "components/FormInputText";
+import { FormInputFile } from "components/FormInputFile";
+import { Paper } from "@mui/material";
 
+import {  useForm } from "react-hook-form";
 
-var cardsFailed = [{index: 1, title: 'Card Two', status: 'cancelled', productImage: 'https://source.unsplash.com/random'},      
-                    {index: 2, title: 'Card Nine', status: 'payment-refused', productImage: 'https://source.unsplash.com/random'}];
-
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
+					
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -60,13 +71,18 @@ const MyOrders = (props) => {
     const [tabValue, setTabValue] = React.useState(0);
 	const { userRef } = useAuth();
 	const [orders, setOrders] = useState([]);
-	
+	const classes = useClasses(modalStyle);
+
 	const [ordersFailed, setOrdersFailed] = useState([]);
 	const [ordersPending, setOrdersPending] = useState([]);
 	const [ordersCompleted, setOrdersCompleted] = useState([]);
 
+	const [paymentModal, setPaymentModal] = useState(false);
+	const [paymentUploaded, setPaymentUploaded] = useState(false);
+
 	const [data, setData] = useState([]);
     const [rows, setRows] = useState(null);
+    const { handleSubmit, control, watch } = useForm();
 
 	async function cancelOrder(id){
 		const orderRef = doc(db, "orders", id);
@@ -77,16 +93,18 @@ const MyOrders = (props) => {
 	const showPayment = (id, status) => {
 		const orderRef = doc(db, "orders", id);
 		// console.log(...ordersPending);
-		console.log(orders);
+		// console.log(orders);
 
-		let paymentUploaded = false;
 		let paymentUrl = null;
+		let currentProduct = orders.find(order => order.id === id)
+		setPaymentModal(true); 
 
-		console.log(orders.find(order => order.id === id));
-
-		
-		// await updateDoc(orderRef, { status: status });
-		// console.log("Order canceled");
+		if(currentProduct.paymentImage){
+			setPaymentUploaded(true);
+		}
+		else{
+			setPaymentUploaded(false);
+		}
 	}
 	
 	function createData(id, products, date, totalValue, status, actions) {
@@ -172,10 +190,6 @@ const MyOrders = (props) => {
 		() => ["Producto", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
 	, []);
 
-	// useEffect(() => {
-	// 	console.log(ordersPending)
-	// }
-	// , [ordersPending])
 	
 	useEffect(() => {
 		let currentTab = ordersPending;
@@ -211,33 +225,126 @@ const MyOrders = (props) => {
 
 	return (
 		<div>
-		<Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
-			<GridContainer direction="row"
-					alignItems="center"
-					justifyContent="center" 
-					justify="center"
-			>	
-				<Box>
-					<Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example">
-						<Tab label="Ordenes pendientes" {...a11yProps(0)} />
-						<Tab label="Mis ordenes activas" {...a11yProps(1)} />
-						<Tab label="Ordenes fallidas" {...a11yProps(2)} />
-					</Tabs>
-				</Box>
-			</GridContainer>
-		</Box>
-		<div>
-			<TabPanel value={tabValue} index={0}>
-				<OrdersTable headers={headers} rows={rows} />
-			</TabPanel>
-			<TabPanel value={tabValue} index={1}>
-				<OrdersTable headers={headers} rows={rows} />
-			</TabPanel>
-			<TabPanel value={tabValue} index={2}>
-				<OrdersTable headers={headers} rows={rows} />
-			</TabPanel>
-		</div>
+			<Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
+				<GridContainer direction="row"
+						alignItems="center"
+						justifyContent="center" 
+						justify="center"
+				>	
+					<Box>
+						<Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example">
+							<Tab label="Ordenes pendientes" {...a11yProps(0)} />
+							<Tab label="Mis ordenes activas" {...a11yProps(1)} />
+							<Tab label="Ordenes fallidas" {...a11yProps(2)} />
+						</Tabs>
+					</Box>
+				</GridContainer>
+			</Box>
+			<div>
+				<TabPanel value={tabValue} index={0}>
+					<OrdersTable headers={headers} rows={rows} />
+				</TabPanel>
+				<TabPanel value={tabValue} index={1}>
+					<OrdersTable headers={headers} rows={rows} />
+				</TabPanel>
+				<TabPanel value={tabValue} index={2}>
+					<OrdersTable headers={headers} rows={rows} />
+				</TabPanel>
+			</div>
+			<Dialog
+				classes={{
+				root: classes.modalRoot,
+				paper: classes.modal + " " + classes.modalLarge
+				}}
+				open={paymentModal}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setPaymentModal(false)}
+				aria-labelledby="large-modal-slide-title"
+				aria-describedby="large-modal-slide-description"
+			>
+				<DialogTitle
+				id="large-modal-slide-title"
+				className={classes.modalHeader}
+				>
+				<Button
+					simple
+					className={classes.modalCloseButton}
+					key="close"
+					aria-label="Close"
+					onClick={() => setPaymentModal(false)}
+				>
+					{" "}
+					<Close className={classes.modalClose} />
+				</Button>
+				<h4 className={classes.modalTitle}>Respaldo del pago</h4>
+				</DialogTitle>
+				<DialogContent
+				id="large-modal-slide-description"
+				className={classes.modalBody}
+				>
+					{paymentUploaded
+						? <Box sx={{
+								width: '100%',
+								height: '100%',
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'center',
+								alignItems: 'center',
+								textAlign: 'center'
+							}}>
+								<img src={paymentUploaded} alt="payment" />
+								<Box sx={{
+									width: '100%',
+									height: '100%',
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'center',
+									alignItems: 'center',
+									textAlign: 'center'
+								}}>
+									<Button
+										color="primary"
+										size="lg"
+										onClick={() => setPaymentModal(false)}
+									>	
+									asa
+									</Button>
+								</Box>
+							</Box>
+						: 
+							<Box sx={{
+									width: '100%',
+									height: '100%',
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'center',
+									alignItems: 'center',
+									textAlign: 'center'
+								}}>
+								
+									<Paper
+									style={{
+										display: "grid",
+										gridRowGap: "20px",
+										padding: "20px",
+										// margin: "10px 300px",
+									}}
+									>
+										<Typography variant="h6"> Imagen</Typography>
 
+										<FormInputFile name="FileValue" control={control} label="File" />
+									
+										<Button onClick={e => {console.log(e)}} variant={"contained"}>
+											{" "}
+											Subir Imagen{" "}
+										</Button>
+
+									</Paper>
+							</Box>
+						}
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
