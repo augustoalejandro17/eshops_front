@@ -10,10 +10,13 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import { useAuth } from "context/AuthContext"
-import { collection, query, where, doc, getDocs, updateDoc } from "firebase/firestore";
+
+import { collection, query, where, doc, getDocs, updateDoc, addDoc } from "firebase/firestore";
+import {  ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage, db } from "../firebase.js"
+
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Close from "@mui/icons-material/Close";
-import { db } from "../firebase.js"
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import OrdersTable from 'components/OrdersTable';
 import TableCell from '@mui/material/TableCell';
@@ -79,10 +82,12 @@ const MyOrders = (props) => {
 
 	const [paymentModal, setPaymentModal] = useState(false);
 	const [paymentUploaded, setPaymentUploaded] = useState(false);
+	const [paymentFile, setPaymentFile] = useState(null);
+	const [updatePayment, setUpdatePayment] = useState(false);
 
 	const [data, setData] = useState([]);
     const [rows, setRows] = useState(null);
-    const { handleSubmit, control, watch } = useForm();
+	const [orderId, setOrderId] = useState(null);
 
 	async function cancelOrder(id){
 		const orderRef = doc(db, "orders", id);
@@ -92,15 +97,14 @@ const MyOrders = (props) => {
 
 	const showPayment = (id, status) => {
 		const orderRef = doc(db, "orders", id);
-		// console.log(...ordersPending);
-		// console.log(orders);
 
-		let paymentUrl = null;
 		let currentProduct = orders.find(order => order.id === id)
 		setPaymentModal(true); 
+		setOrderId(id);
 
 		if(currentProduct.paymentImage){
 			setPaymentUploaded(true);
+			setPaymentFile(currentProduct.paymentImage);
 		}
 		else{
 			setPaymentUploaded(false);
@@ -277,14 +281,15 @@ const MyOrders = (props) => {
 					{" "}
 					<Close className={classes.modalClose} />
 				</Button>
-				<h4 className={classes.modalTitle}>Respaldo del pago</h4>
+				<Typography variant="h4" className={classes.modalTitle}> Respaldo del pago </Typography>
 				</DialogTitle>
 				<DialogContent
 				id="large-modal-slide-description"
 				className={classes.modalBody}
 				>
-					{paymentUploaded
-						? <Box sx={{
+					{paymentUploaded ? 
+						
+						<Box sx={{
 								width: '100%',
 								height: '100%',
 								display: 'flex',
@@ -293,7 +298,7 @@ const MyOrders = (props) => {
 								alignItems: 'center',
 								textAlign: 'center'
 							}}>
-								<img src={paymentUploaded} alt="payment" />
+								<img src={paymentFile} alt="payment" />
 								<Box sx={{
 									width: '100%',
 									height: '100%',
@@ -301,48 +306,56 @@ const MyOrders = (props) => {
 									flexDirection: 'column',
 									justifyContent: 'center',
 									alignItems: 'center',
-									textAlign: 'center'
+									textAlign: 'center',
+									marginTop: '1rem',
 								}}>
 									<Button
-										color="primary"
+										color="muted"
 										size="lg"
-										onClick={() => setPaymentModal(false)}
+										onClick={() => {setPaymentModal(false); setUpdatePayment(true);}}
 									>	
-									asa
+									Subir nueva imagen
 									</Button>
 								</Box>
 							</Box>
 						: 
-							<Box sx={{
-									width: '100%',
-									height: '100%',
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'center',
-									textAlign: 'center'
-								}}>
-								
-									<Paper
-									style={{
-										display: "grid",
-										gridRowGap: "20px",
-										padding: "20px",
-										// margin: "10px 300px",
-									}}
-									>
-										<Typography variant="h6"> Imagen</Typography>
-
-										<FormInputFile name="FileValue" control={control} label="File" />
-									
-										<Button onClick={e => {console.log(e)}} variant={"contained"}>
-											{" "}
-											Subir Imagen{" "}
-										</Button>
-
-									</Paper>
-							</Box>
+							<PaymentForm userRef={userRef} id={orderId} />
 						}
+				</DialogContent>
+			</Dialog>
+			<Dialog
+				classes={{
+				root: classes.modalRoot,
+				paper: classes.modal + " " + classes.modalLarge
+				}}
+				open={updatePayment}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setUpdatePayment(false)}
+				aria-labelledby="large-modal-slide-title"
+				aria-describedby="large-modal-slide-description"
+			>
+				<DialogTitle
+				id="large-modal-slide-title"
+				className={classes.modalHeader}
+				>
+				<Button
+					simple
+					className={classes.modalCloseButton}
+					key="close"
+					aria-label="Close"
+					onClick={() => setUpdatePayment(false)}
+				>
+					{" "}
+					<Close className={classes.modalClose} />
+				</Button>
+				<Typography variant="h4" className={classes.modalTitle}> Subir un nuevo comprobante </Typography>
+				</DialogTitle>
+				<DialogContent
+				id="large-modal-slide-description"
+				className={classes.modalBody}
+				>
+					<PaymentForm userRef={userRef} id={orderId} />
 				</DialogContent>
 			</Dialog>
 		</div>
@@ -350,3 +363,101 @@ const MyOrders = (props) => {
 }
 
 export default MyOrders
+
+
+export const PaymentForm = (props) => {
+
+	const { userRef, id } = props;
+	const [file, setFile] = useState(null);
+	const { handleSubmit, control, watch } = useForm();
+	console.log(userRef, id);
+	useEffect(() => {
+        const subscription = watch((data) => {   
+            setFile(data.attachments[0]);         
+        });
+        return () => subscription.unsubscribe();
+    }, [watch]);
+
+    const uploadImage = () => {
+        if(file == null)
+            return;
+        const storageRef = ref(storage, 'payments/' + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        // Listen for state changes, errors, and completion of the upload.
+        uploadTask.on('state_changed',
+        (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+            case 'paused':
+            console.log('Upload is paused');
+            break;
+            case 'running':
+            console.log('Upload is running');
+            break;
+            default:
+            break;
+        }
+        }, 
+        (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+            case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+            case 'storage/canceled':
+            // User canceled the upload
+            break;
+            case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+            default:
+            break;
+        }
+        }, 
+        () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+				const orderRef = doc(db, "orders", id);
+				updateDoc(orderRef, { paymentImage: downloadURL })
+				.then(() => {console.log("success")}).catch((e) => {console.log(e)});
+                });
+            }
+        );
+        
+    };
+	return(
+		<Box sx={{
+				width: '100%',
+				height: '100%',
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+				textAlign: 'center'
+			}}
+		>
+			<Paper
+			style={{
+				display: "grid",
+				gridRowGap: "20px",
+				padding: "20px",
+				// margin: "10px 300px",
+			}}
+			>
+				<Typography variant="h6"> Imagen</Typography>
+
+				<FormInputFile name="FileValue" control={control} label="File" />
+			
+				<Button onClick={handleSubmit(uploadImage)} variant={"contained"}>
+					{" "}
+					Subir Imagen{" "}
+				</Button>
+
+				</Paper>
+		</Box>
+				
+	)
+}
