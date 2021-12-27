@@ -24,6 +24,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useAuth } from "context/AuthContext"
 import { auth } from "firebase.js"
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const theme = createTheme();
 
@@ -133,10 +135,19 @@ const DefaultAppBar = (props) => {
                 to={`/profile/${userRef}`}>  Perfil
             </NavLink>
         </MenuItem>
+        <MenuItem onClick={handleMenuClose} >
+            <NavLink style={{ textDecoration: "none", color: "black" }} 
+                to={`/chats`}>  Mensajes
+            </NavLink>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose} >
+            <NavLink style={{ textDecoration: "none", color: "black" }} 
+                to={`/approve-orders`}>  Aprovar ordenes
+            </NavLink>
+        </MenuItem>
         <MenuItem onClick={handleLogout}>
             Cerrar Sesión
         </MenuItem>
-        {/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
       </Menu>
     );
 
@@ -214,7 +225,7 @@ const DefaultAppBar = (props) => {
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <Link style={{ textDecoration: "none" }} 
-                    to={`/chats`}
+                    to={`/my-orders`}
                 > 
                     <IconButton
                         style={{ color: 'black' }}
@@ -225,7 +236,7 @@ const DefaultAppBar = (props) => {
                         aria-haspopup="true"
                         color="inherit"
                     >
-                        <MailIcon />
+                        <FavoriteIcon />
                     </IconButton>
                 </Link>
                 <Link style={{ textDecoration: "none" }} 
