@@ -196,8 +196,6 @@ const Chats = () => {
     function chatClicked(chat) {
         setCurrentChatRef(chat.id);
         setCurrentMessageList(chat.messages);
-        console.log(chat)
-        console.log(uiChatsList)
     }
     return (
         <div>

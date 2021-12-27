@@ -125,6 +125,7 @@ const Profile = (props) => {
                                         justify="center">
                             <Link style={{ textDecoration: "none" }} 
                                 to={`/`}
+                                state= { {user: users.sender} }
                                 // key={card.index}
                             >
                                 <Button simple color="primary" size="lg" style={{justifyContent: "center"}}>
