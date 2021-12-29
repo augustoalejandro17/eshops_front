@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
             password
           );
         } catch (error) {
-          console.log(error.message);
+            throw new Error(error.message);
         }
     };
 
@@ -76,10 +76,14 @@ export function AuthProvider({ children }) {
     // function updatePassword(password) {
     //     return currentUser.updatePassword(password)
     // }
-    onAuthStateChanged(auth, (currentUser) => {
-                setCurrentUser(currentUser)
-                setLoading(false)
-            });
+    useEffect(() => {
+        const unsubscribe = 
+        onAuthStateChanged(auth, (currentUser) => {
+            setCurrentUser(currentUser)
+            setLoading(false)
+          });
+        return () => unsubscribe();
+    }, [])
 
     useEffect(() => {
         if(currentUser) {
@@ -111,16 +115,8 @@ export function AuthProvider({ children }) {
         }
 
     }, [userPermissionsRef]);
-    // useEffect(() => {
-    //     const unsubscribe = 
-    //     onAuthStateChanged(auth, (currentUser) => {
-    //         setCurrentUser(currentUser)
-    //         setLoading(false)
-    //       });
 
-    //     return unsubscribe
-    // }, [])
-
+    
     const addItemToCart = (item) => {
         setCart([...cart, item]);
     }
