@@ -87,10 +87,13 @@ const LoginScreen = (props) => {
                     </CardHeader>
                     <CardBody>
                       <CustomInput
-                        labelText="Email..."
-                        id="email"
+                        labelText="Email"
+                        id="regular"
                         formControlProps={{
                           fullWidth: true,
+                          sx : {
+                            marginTop: "15px",
+                            }
                         }}
                         inputProps={{
                           type: "email",
@@ -103,10 +106,13 @@ const LoginScreen = (props) => {
                         }}
                       />
                       <CustomInput
-                        labelText="Password"
-                        id="pass"
+                        labelText="Contraseña"
+                        id="regular"
                         formControlProps={{
                           fullWidth: true,
+                          sx : {
+                            marginTop: "15px",
+                            }
                         }}
                         inputProps={{
                           type: "password",
@@ -129,7 +135,8 @@ const LoginScreen = (props) => {
                         justify="center"	
 						>
 							
-						<Button outlined color="primary" size="lg" onClick={handleLogin}>
+						<Button color="primary" size="lg" onClick={handleLogin} >
+                    
 							Iniciar Sesión
 						</Button>
 						o
