@@ -133,6 +133,9 @@ const LoginScreen = (props) => {
                         alignItems="center"
                         justifyContent="center" 
                         justify="center"	
+                        sx = {{
+                            marginLeft: "10px",
+                        }}
 						>
 							
 						<Button color="primary" size="lg" onClick={handleLogin} >
