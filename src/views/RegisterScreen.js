@@ -34,7 +34,8 @@ const RegisterScreen = (props) => {
     const [confirmPassword, setConfirmPassword] = useState();
 
     const { signup } = useAuth();
-    const [error, setError] = useState("")
+	const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
@@ -42,15 +43,58 @@ const RegisterScreen = (props) => {
 
     async function handleRegister(e) {
         e.preventDefault()
-        
-        try {
-            setError("")
-            setLoading(true)
-            await signup(auth, name, email, password);
-            navigate(from, { replace: true });
-        } catch {
-            setError("Failed to create an account")
+
+		if(!password || !confirmPassword || !email || !name) {
+			setError(true)
+			setErrorMessage("Porfavor completa todos los campos")
+			return
+		}
+        else if (password !== confirmPassword) {
+            setErrorMessage("Las contraseñas no coinciden")
+			setError(true);
         }
+		else if (password.length < 6) {
+			setErrorMessage("La contraseña debe tener al menos 6 caracteres")
+			setError(true);
+		}
+		else if (name.length < 3) {
+			setErrorMessage("El nombre debe tener al menos 3 caracteres")
+			setError(true);
+		}
+        else{
+			try {
+				if(!(password === "")){
+					setError(false);
+					setErrorMessage("");
+					setLoading(true);
+					await signup(auth, name, email, password);
+					navigate(from, { replace: true });
+				}
+				else{
+					setError(true);
+					setErrorMessage("La contraseña no puede estar vacía");
+				}
+			} catch(error) {
+				setError(true);
+				switch (error.message) {
+					case("auth/missing-email"):
+						setErrorMessage("El correo electrónico es obligatorio");
+						break;
+					case('auth/email-already-in-use'):
+						setErrorMessage("El correo electrónico ya está en uso");
+						break;
+					case('auth/invalid-email'):
+						setErrorMessage("El correo electrónico no es válido");
+						break;
+					case('auth/weak-password'):
+						setErrorMessage("La contraseña es muy débil");
+						break;
+					default:
+						setErrorMessage("Error al crear la cuenta");
+						break;
+				}
+			}
+		}
 
         setLoading(false)
     }
@@ -90,13 +134,19 @@ const RegisterScreen = (props) => {
                       <CustomInput
                         labelText="First Name..."
                         id="first"
+						errorText={errorMessage}  
                         formControlProps={{
                           fullWidth: true,
+						  error: error,
+						  required: true,
+						  sx : {
+                            marginTop: "15px",
+                            }
                         }}
                         
                         inputProps={{
                           type: "text",
-                          onChange: (userName) => setName(userName.target.value),
+                          onChange: (userName) => {setName(userName.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <People className={classes.inputIconsColor} />
@@ -107,12 +157,18 @@ const RegisterScreen = (props) => {
                       <CustomInput
                         labelText="Email..."
                         id="email"
+						errorText={errorMessage}  
                         formControlProps={{
                           fullWidth: true,
+						  error: error,
+						  required: true,
+						  sx : {
+                            marginTop: "15px",
+                            }
                         }}
                         inputProps={{
                           type: "email",
-                          onChange: (userEmail) => setEmail(userEmail.target.value),
+                          onChange: (userEmail) => {setEmail(userEmail.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -121,14 +177,46 @@ const RegisterScreen = (props) => {
                         }}
                       />
                       <CustomInput
-                        labelText="Password"
-                        id="pass"
+                        labelText="Contraseña"
+                        id="contraseña"
+						errorText={errorMessage}  
                         formControlProps={{
                           fullWidth: true,
+						  error: error,
+						  required: true,
+						  sx : {
+                            marginTop: "15px",
+                            }
                         }}
                         inputProps={{
                           type: "password",
-                          onChange: (userPassword) => setPassword(userPassword.target.value),
+                          onChange: (userPassword) => {setPassword(userPassword.target.value); setError(false); setErrorMessage(null)},
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Icon className={classes.inputIconsColor}>
+                                lock_outline
+                              </Icon>
+                            </InputAdornment>
+                          ),
+                          autoComplete: "off",
+                        }}
+                      />
+
+						<CustomInput
+                        labelText="Confirmar Contraseña"
+                        id="confirmar"
+						errorText={errorMessage}  
+                        formControlProps={{
+                          fullWidth: true,
+						  error: error,
+						  required: true,
+						  sx : {
+                            marginTop: "15px",
+                            }
+                        }}
+                        inputProps={{
+                          type: "password",
+                          onChange: (userPassword) => {setConfirmPassword(userPassword.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>
@@ -146,7 +234,7 @@ const RegisterScreen = (props) => {
                             alignItems="center"
                             justifyContent="center" 
                         >
-                        <Button outlined color="primary" size="lg" onClick={handleRegister}>
+                        <Button color="primary" size="lg" onClick={handleRegister}>
                             Registrarse
                         </Button>
                         o 

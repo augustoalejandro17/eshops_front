@@ -27,7 +27,6 @@ const LoginScreen = (props) => {
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState();
     const { login, userRef, currentUser } = useAuth();
     const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
@@ -52,31 +51,24 @@ const LoginScreen = (props) => {
             	navigate(from, { replace: true })
 			}
 			else{
-				setErrorMessage("Please enter a password")
+				setErrorMessage("La contraseña no puede estar vacía")
 				setError(true)
 			}
         } catch (error) {
+			setError(true)
 			switch (error.message) {
 				case('auth/invalid-email'):
 					setErrorMessage("Email invalido")
-					setError(true)
-					console.log('Invalid email')
 					break;
 				case('auth/user-not-found'):
 					setErrorMessage("Error de usuario o contraseña")
-					setError(true)
-					console.log('User not found')
 					break;
 				case('auth/wrong-password'):
 					setErrorMessage("Error de usuario o contraseña")
-					setError(true)
-					console.log('Wrong password')
 					break;
 				default:
 					setErrorMessage("Hubo un error al iniciar sesión")
-					setError(true)
-					console.log(error.message)
-
+					break;
 			}
         }
 
@@ -129,7 +121,7 @@ const LoginScreen = (props) => {
                         }}
                         inputProps={{
                           type: "email",
-                          onChange: (userEmail) => setEmail(userEmail.target.value, setError(false), setErrorMessage(null)),
+                          onChange: (userEmail) => {setEmail(userEmail.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -152,7 +144,7 @@ const LoginScreen = (props) => {
                         }}
                         inputProps={{
                           type: "password",
-                          onChange: (userPassword) => setPassword(userPassword.target.value, setError(false), setErrorMessage(null)),
+                          onChange: (userPassword) => {setPassword(userPassword.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>

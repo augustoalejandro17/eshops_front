@@ -32,20 +32,15 @@ export function AuthProvider({ children }) {
             userEmail,
             userPassword
           ).then(() => {
-            //Once the user creation has happened successfully, we can add the currentUser into firestore
-            //with the appropriate details.
+
             addDoc(collection(db, "users"), {
                 name: userName,
                 email: userEmail,
             }).then((docRef) => { setUserRef(docRef.id); })
-            //ensure we catch any errors at this stage to advise us if something does go wrong
-            .catch(error => {
-                console.log('Something went wrong with added user to firestore: ', error);
-            })
           })
           //we need to catch the whole sign up process if it fails too.
         } catch (error) {
-          console.log(error.message);
+            throw new Error(error.code);
         }
     };
 
@@ -57,7 +52,6 @@ export function AuthProvider({ children }) {
             password
           );
         } catch (error) {
-            // console.log(error.message, error.code);
             throw new Error(error.code);
         }
     };
