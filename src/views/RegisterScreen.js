@@ -125,14 +125,14 @@ const RegisterScreen = (props) => {
                 <Card className={classes[cardAnimaton]}>
                   <form className={classes.form}>
                     <CardHeader color="info" className={classes.cardHeader}>
-                      <h4>Register</h4>
+                      <h4>Registrar nueva cuenta</h4>
                       <div className={classes.socialLine}>
                       </div>
                     </CardHeader>
                     {/* <p className={classes.divider}>Or Be Classical</p> */}
                     <CardBody>
                       <CustomInput
-                        labelText="First Name..."
+                        labelText="Nombre"
                         id="first"
 						errorText={errorMessage}  
                         formControlProps={{
@@ -155,7 +155,7 @@ const RegisterScreen = (props) => {
                         }}
                       />
                       <CustomInput
-                        labelText="Email..."
+                        labelText="Email"
                         id="email"
 						errorText={errorMessage}  
                         formControlProps={{

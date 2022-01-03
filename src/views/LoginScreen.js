@@ -100,7 +100,7 @@ const LoginScreen = (props) => {
                 <Card className={classes[cardAnimaton]}>
                   <form className={classes.form}>
                     <CardHeader color="primary" className={classes.cardHeader}>
-                      <h4>Login</h4>
+                      <h4>Iniciar Sesión</h4>
                       <div className={classes.socialLine}>
         
                       </div>
@@ -167,8 +167,7 @@ const LoginScreen = (props) => {
 						>
 							
 						<Button color="primary" size="lg" onClick={handleLogin} >
-                    
-							Iniciar Sesión
+							Entrar
 						</Button>
 						o
 						<GridItem xs={12} sm={12} md={12}>
