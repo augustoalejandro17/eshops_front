@@ -57,7 +57,8 @@ export function AuthProvider({ children }) {
             password
           );
         } catch (error) {
-            throw new Error(error.message);
+            // console.log(error.message, error.code);
+            throw new Error(error.code);
         }
     };
 

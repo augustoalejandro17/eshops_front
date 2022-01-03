@@ -11,6 +11,7 @@ import Input from "@mui/material/Input";
 import styles from "assets/jss/material-kit-react/components/customInputStyle.js";
 
 import useClasses from "components/UseClasses";
+import FormHelperText from '@mui/material/FormHelperText';
 
 export default function CustomInput(props) {
   const classes = useClasses(styles);
@@ -24,6 +25,7 @@ export default function CustomInput(props) {
     white,
     inputRootCustomClasses,
     success,
+    errorText,
   } = props;
 
   const labelClasses = classNames({
@@ -73,6 +75,9 @@ export default function CustomInput(props) {
         id={id}
         {...inputProps}
       />
+
+      {errorText ? <FormHelperText id={id} error={error}>{errorText}</FormHelperText> : null}
+
     </FormControl>
   );
 }
