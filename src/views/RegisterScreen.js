@@ -16,6 +16,8 @@ import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import useClasses from "components/UseClasses";
 import { useAuth } from "context/AuthContext"
+import { Typography } from '@mui/material';
+
 import {
     useNavigate,
     useLocation,
@@ -146,14 +148,17 @@ const RegisterScreen = (props) => {
                             alignItems="center"
                             justifyContent="center" 
                         >
-                        <Button outlined color="primary" size="lg" onClick={handleRegister}>
+                        <Button color="primary" size="lg" onClick={handleRegister}>
                             Registrarse
                         </Button>
                         o 
                         <Muted>
 
                         <GridItem xs={12} sm={12} md={12}>
-                          Si es que tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/login">ingresa</Link>  
+							<Typography variant="body1"  align="center" gutterBottom>
+							Si es que tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/login">ingresa aquí</Link>   
+							</Typography>
+                           
                         
                         </GridItem>
                         </Muted>

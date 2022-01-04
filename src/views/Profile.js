@@ -128,7 +128,7 @@ const Profile = (props) => {
                                 state= { {user: users.receiver} }
                                 // key={card.index}
                             >
-                                <Button simple color="primary" size="lg" style={{justifyContent: "center"}}>
+                                <Button simple color="primary" size="lg" style={{justifyContent: "center", marginLeft: "40px"}}>
                                     Ver Tiendas
                                 </Button>
 

@@ -125,8 +125,10 @@ const Shop = () => {
                                 {card.name}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                            <p><b>Description:</b> {card.description} </p> 
-                            
+                                <b>Descripción:</b> {card.description} 
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <b>Precio:</b> ${card.price} 
                             </Typography>
                             <CardActions style={{display: "flex", justifyContent: "center"}}>
                                 { showButton("showProduct", card.id) ?

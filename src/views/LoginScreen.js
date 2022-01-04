@@ -22,6 +22,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
+import { Typography } from '@mui/material';
 
 const LoginScreen = (props) => {
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -88,7 +89,7 @@ const LoginScreen = (props) => {
                     <CardBody>
                       <CustomInput
                         labelText="Email"
-                        id="regular"
+                        id="email"
                         formControlProps={{
                           fullWidth: true,
                           sx : {
@@ -107,7 +108,7 @@ const LoginScreen = (props) => {
                       />
                       <CustomInput
                         labelText="Contraseña"
-                        id="regular"
+                        id="contraseña"
                         formControlProps={{
                           fullWidth: true,
                           sx : {
@@ -144,8 +145,9 @@ const LoginScreen = (props) => {
 						</Button>
 						o
 						<GridItem xs={12} sm={12} md={12}>
-						Si es que no tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/register">registrate</Link>  
-						
+							<Typography variant="body1"  align="center" gutterBottom>
+								Si es que no tienes una cuenta,  <Link style={{ textDecoration: "none" }} to="/register">registrate</Link>  
+							</Typography>
 						</GridItem>
 					  </GridContainer>
                     </CardFooter>
