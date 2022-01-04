@@ -26,11 +26,11 @@ import { Typography } from '@mui/material';
 
 const LoginScreen = (props) => {
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const { login, userRef, currentUser } = useAuth();
-    const [error, setError] = useState("")
+    const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
@@ -44,13 +44,33 @@ const LoginScreen = (props) => {
         // }
 
         try {
-            setError("")
-            setLoading(true)
-            await login(auth, email, password);
-            navigate(from, { replace: true })
+			if(!(password === "")){
+				setErrorMessage("")
+				setError(false)
+            	setLoading(true)
+            	await login(auth, email, password);
+            	navigate(from, { replace: true })
+			}
+			else{
+				setErrorMessage("La contraseña no puede estar vacía")
+				setError(true)
+			}
         } catch (error) {
-            setError("Failed to login an account")
-            console.log(error.message)
+			setError(true)
+			switch (error.message) {
+				case('auth/invalid-email'):
+					setErrorMessage("Email invalido")
+					break;
+				case('auth/user-not-found'):
+					setErrorMessage("Error de usuario o contraseña")
+					break;
+				case('auth/wrong-password'):
+					setErrorMessage("Error de usuario o contraseña")
+					break;
+				default:
+					setErrorMessage("Hubo un error al iniciar sesión")
+					break;
+			}
         }
 
         setLoading(false)
@@ -81,7 +101,7 @@ const LoginScreen = (props) => {
                 <Card className={classes[cardAnimaton]}>
                   <form className={classes.form}>
                     <CardHeader color="primary" className={classes.cardHeader}>
-                      <h4>Login</h4>
+                      <h4>Iniciar Sesión</h4>
                       <div className={classes.socialLine}>
         
                       </div>
@@ -90,15 +110,19 @@ const LoginScreen = (props) => {
                       <CustomInput
                         labelText="Email"
                         id="email"
+						error={error}
+						errorText={errorMessage}  
                         formControlProps={{
                           fullWidth: true,
+						  error: error,
+						  required: true,
                           sx : {
                             marginTop: "15px",
                             }
                         }}
                         inputProps={{
                           type: "email",
-                          onChange: (userEmail) => setEmail(userEmail.target.value),
+                          onChange: (userEmail) => {setEmail(userEmail.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Email className={classes.inputIconsColor} />
@@ -109,15 +133,19 @@ const LoginScreen = (props) => {
                       <CustomInput
                         labelText="Contraseña"
                         id="contraseña"
+						errorText={errorMessage}  
+						error={error}
                         formControlProps={{
                           fullWidth: true,
+						  error: error,
+						  required: true,
                           sx : {
                             marginTop: "15px",
                             }
                         }}
                         inputProps={{
                           type: "password",
-                          onChange: (userPassword) => setPassword(userPassword.target.value),
+                          onChange: (userPassword) => {setPassword(userPassword.target.value); setError(false); setErrorMessage(null)},
                           endAdornment: (
                             <InputAdornment position="end">
                               <Icon className={classes.inputIconsColor}>
@@ -140,8 +168,7 @@ const LoginScreen = (props) => {
 						>
 							
 						<Button color="primary" size="lg" onClick={handleLogin} >
-                    
-							Iniciar Sesión
+							Entrar
 						</Button>
 						o
 						<GridItem xs={12} sm={12} md={12}>
