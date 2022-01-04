@@ -14,6 +14,7 @@ import Box from '@mui/material/Box';
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
 import useClasses from "components/UseClasses";
 import Typography from '@mui/material/Typography';
@@ -32,6 +33,14 @@ async function updatePermissions(permissionsRefId, shopIdArray){
 		await updateDoc(permissionsRef, { productsAllowed: arrayUnion(shopId) });
 	});
 }	
+
+function confirmOrderConfirmation(orderId, permissionsRef, productId){
+
+}
+
+function declineOrderConfirmation(orderId, permissionsRef){
+
+}
 
 async function confirmOrder(id, permissionsRef, productId){
 	const orderRef = doc(db, "orders", id);
@@ -237,7 +246,6 @@ export const PaymentForm = (props) => {
 	const { userRef, id } = props;
 	const [file, setFile] = useState(null);
 	const { handleSubmit, control, watch } = useForm();
-	console.log(userRef, id);
 	useEffect(() => {
         const subscription = watch((data) => {   
             setFile(data.attachments[0]);         

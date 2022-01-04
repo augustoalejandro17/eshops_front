@@ -25,6 +25,7 @@ import useClasses from "components/UseClasses";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
 import Slide from "@mui/material/Slide";
 import { FormInputText } from "components/FormInputText";
@@ -79,20 +80,31 @@ const MyOrders = (props) => {
 	const [ordersFailed, setOrdersFailed] = useState([]);
 	const [ordersPending, setOrdersPending] = useState([]);
 	const [ordersCompleted, setOrdersCompleted] = useState([]);
+	
+	const [currentOrderId, setCurrentOrderId] = useState(null);
 
 	const [paymentModal, setPaymentModal] = useState(false);
 	const [paymentUploaded, setPaymentUploaded] = useState(false);
 	const [paymentFile, setPaymentFile] = useState(null);
 	const [updatePayment, setUpdatePayment] = useState(false);
 
+	const [confirmationModal, setConfirmationModal] = useState(false);
+	const [successModal, setSuccessModal] = useState(false);
+
 	const [data, setData] = useState([]);
     const [rows, setRows] = useState(null);
 	const [orderId, setOrderId] = useState(null);
 
-	async function cancelOrder(id){
-		const orderRef = doc(db, "orders", id);
+	function cancelOrderConfimation(id){
+		setConfirmationModal(true);
+		setCurrentOrderId(id);
+	}
+
+	async function cancelOrder(){
+		const orderRef = doc(db, "orders", currentOrderId);
 		await updateDoc(orderRef, { status: "canceled" });
-		console.log("Order canceled");
+		setSuccessModal(true); 
+		setConfirmationModal(false);
 	}
 
 	const showPayment = (id, status) => {
@@ -118,7 +130,7 @@ const MyOrders = (props) => {
 	const roundButtons = (id, permissionsRef, orderStatus, productId) => {
 
 		const icons = [{ color: "info", icon: FilePresentIcon, id: id, orderStatus: orderStatus, onclick: (orderId, currentStatus) => { showPayment(orderId, currentStatus); } },
-		{ color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { cancelOrder(orderId) } }
+		{ color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { cancelOrderConfimation(orderId) } }
 		].map((prop, key) => {
 			return (		
 				<Button
@@ -212,7 +224,26 @@ const MyOrders = (props) => {
 				break;
 		}
 
-        const rowsToSet = currentTab.map((row) => (
+        const rowsToSet = currentTab.map((row) => {
+			let translatedStatus = "";
+			switch (row.status) {
+				case "pending":
+					translatedStatus = "Pendiente";
+					break;
+				case "completed":
+					translatedStatus = "Completada";
+					break;
+				case "canceled":
+					translatedStatus = "Cancelada";
+					break;
+				case "payment-refused":
+					translatedStatus = "Pago rechazado";
+					break;
+				default:
+					translatedStatus = "Cancelada";
+					break;
+			}
+			return (
             <TableRow
             key={row.id}
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -220,10 +251,11 @@ const MyOrders = (props) => {
                 <TableCell align="center">{row.products}</TableCell>
                 <TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
                 <TableCell align="center">${row.totalValue}</TableCell>
-                <TableCell align="center">{row.status}</TableCell>
+                <TableCell align="center">{translatedStatus}</TableCell>
                 <TableCell align="center">{row.actions}</TableCell>
             </TableRow>
-        ))
+	)
+		})
         setRows(rowsToSet);
     }, [tabValue, ordersCompleted, ordersFailed, ordersPending]);
 
@@ -358,6 +390,67 @@ const MyOrders = (props) => {
 					<PaymentForm userRef={userRef} id={orderId} />
 				</DialogContent>
 			</Dialog>
+			<Dialog
+				classes={{
+				root: classes.modalRoot,
+				paper: classes.modal
+				}}
+				open={confirmationModal}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setConfirmationModal(false)}
+				aria-labelledby="classic-modal-slide-title"
+				aria-describedby="classic-modal-slide-description"
+			>
+				<DialogTitle
+				id="classic-modal-slide-title"
+				disableTypography
+				className={classes.modalHeader}
+				>
+				<Button
+					simple
+					className={classes.modalCloseButton}
+					key="close"
+					aria-label="Close"
+					onClick={() => setConfirmationModal(false)}
+				>
+					{" "}
+					<Close className={classes.modalClose} />
+				</Button>
+				<Typography variant="h4" className={classes.modalTitle}>Cancelar Orden</Typography>
+				</DialogTitle>
+				<DialogContent
+				id="classic-modal-slide-description"
+				className={classes.modalBody}
+				>
+				<Typography variant='body1' color='textSecondary' gutterBottom>¿Estás seguro de cancelar la orden?</Typography>
+				</DialogContent>
+				<DialogActions className={classes.modalFooter}>
+				<Button onClick={() => setConfirmationModal(false)} color="secondary">
+					Close
+				</Button>
+				<Button onClick={() => cancelOrder()} color="primary">Confirmar</Button>
+				</DialogActions>
+			</Dialog>
+			<Dialog
+				classes={{
+				root: classes.modalRoot,
+				paper: classes.modal
+				}}
+				open={successModal}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setSuccessModal(false)}
+				aria-labelledby="classic-modal-slide-title"
+				aria-describedby="classic-modal-slide-description"
+			>
+				<DialogContent
+				id="classic-modal-slide-description"
+				className={classes.modalBody}
+				>
+				<Typography variant='body1' color='textSecondary' gutterBottom> Se canceló la orden </Typography>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
@@ -370,7 +463,6 @@ export const PaymentForm = (props) => {
 	const { userRef, id } = props;
 	const [file, setFile] = useState(null);
 	const { handleSubmit, control, watch } = useForm();
-	console.log(userRef, id);
 	useEffect(() => {
         const subscription = watch((data) => {   
             setFile(data.attachments[0]);         
