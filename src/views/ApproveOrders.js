@@ -34,22 +34,14 @@ async function updatePermissions(permissionsRefId, shopIdArray){
 	});
 }	
 
-function confirmOrderConfirmation(orderId, permissionsRef, productId){
-
-}
-
-function declineOrderConfirmation(orderId, permissionsRef){
-
-}
-
 async function confirmOrder(id, permissionsRef, productId){
-	const orderRef = doc(db, "orders", id);
-	await updateDoc(orderRef, { status: "confirmed" });
-	await updatePermissions(permissionsRef, productId);
+	// const orderRef = doc(db, "orders", id);
+	// await updateDoc(orderRef, { status: "confirmed" });
+	// await updatePermissions(permissionsRef, productId);
 	console.log("confirmed");
 }
 
-async function declineOrder(id, permissionsRef){
+async function declineOrder(id){
 	const orderRef = doc(db, "orders", id);
 	await updateDoc(orderRef, { status: "declined" });
 }
@@ -69,7 +61,14 @@ export default function ApproveOrders() {
     const [paymentFile, setPaymentFile] = useState(null);
 	const [updatePayment, setUpdatePayment] = useState(false);
 
+	const [confirmModal, setConfirmModal] = useState(false);
+	const [declineModal, setDeclineModal] = useState(false);
+
+	const [actionPerformedModal, setActionPerformedModal] = useState(false);
+
     const [orderId, setOrderId] = useState(null);
+	const [currentPermissionRef, setCurrentPermissionRef] = useState(null);
+	const [currentProductId, setCurrentProductId] = useState(null);
 
     const classes = useClasses(modalStyle);
 
@@ -90,11 +89,23 @@ export default function ApproveOrders() {
         }
     }
     
+	function confirmOrderConfirmation(id, permissionsRef, productId){
+		setConfirmModal(true);
+		setOrderId(id);
+		setCurrentPermissionRef(permissionsRef);
+		setCurrentProductId(productId);
+	}
+	
+	function declineOrderConfirmation(id){
+		setDeclineModal(true);
+		setOrderId(id);
+	}
+
     const roundButtons = (id, permissionsRef, productId) => {
 
-        const icons = [{ color: "info", icon: FilePresentIcon, id: id, onclick: (orderId) => { showPayment(orderId); } },
-        { color: "success", icon: DoneIcon, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { confirmOrder(orderId, permissionsRef, productId) } },
-        { color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (orderId) => { declineOrder(orderId) } }
+        const icons = [{ color: "info", icon: FilePresentIcon, id: id, onclick: (id) => { showPayment(id); } },
+        { color: "success", icon: DoneIcon, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (id) => { confirmOrderConfirmation(id, permissionsRef, productId) } },
+        { color: "danger", icon: Close, id: id, userPermissionsRef: permissionsRef, productId: productId, onclick: (id) => { declineOrderConfirmation(id) } }
         ].map((prop, key) => {
             return (		
                 <Button
@@ -237,6 +248,48 @@ export default function ApproveOrders() {
                 }
             </DialogContent>
         </Dialog>
+		<Dialog
+				classes={{
+				root: classes.modalRoot,
+				paper: classes.modal
+				}}
+				open={confirmModal}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setConfirmModal(false)}
+				aria-labelledby="classic-modal-slide-title"
+				aria-describedby="classic-modal-slide-description"
+			>
+				<DialogTitle
+				id="classic-modal-slide-title"
+				disableTypography
+				className={classes.modalHeader}
+				>
+				<Button
+					simple
+					className={classes.modalCloseButton}
+					key="close"
+					aria-label="Close"
+					onClick={() => setConfirmModal(false)}
+				>
+					{" "}
+					<Close className={classes.modalClose} />
+				</Button>
+				<Typography variant="h4" className={classes.modalTitle}>Cancelar Orden</Typography>
+				</DialogTitle>
+				<DialogContent
+				id="classic-modal-slide-description"
+				className={classes.modalBody}
+				>
+				<Typography variant='body1' color='textSecondary' gutterBottom>¿Estás seguro de cancelar la orden?</Typography>
+				</DialogContent>
+				<DialogActions className={classes.modalFooter}>
+				<Button onClick={() => setConfirmModal(false)} color="secondary">
+					Close
+				</Button>
+				<Button onClick={() => confirmOrder(orderId, currentPermissionRef, currentProductId)} color="primary">Confirmar</Button>
+				</DialogActions>
+			</Dialog>
         </>
   	);
 }
