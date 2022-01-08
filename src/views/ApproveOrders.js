@@ -34,18 +34,6 @@ async function updatePermissions(permissionsRefId, shopIdArray){
 	});
 }	
 
-async function confirmOrder(id, permissionsRef, productId){
-	// const orderRef = doc(db, "orders", id);
-	// await updateDoc(orderRef, { status: "confirmed" });
-	// await updatePermissions(permissionsRef, productId);
-	console.log("confirmed");
-}
-
-async function declineOrder(id){
-	const orderRef = doc(db, "orders", id);
-	await updateDoc(orderRef, { status: "declined" });
-}
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
@@ -72,6 +60,27 @@ export default function ApproveOrders() {
 
     const classes = useClasses(modalStyle);
 
+    async function confirmOrder(id, permissionsRef, productId){
+        try {
+            const orderRef = doc(db, "orders", id);
+            await updateDoc(orderRef, { status: "confirmed" });
+            await updatePermissions(permissionsRef, productId);
+            setConfirmModal(false);
+            console.log("confirmed");
+        } catch (error) {
+            console.log(error);
+        }        
+    }
+    
+    async function declineOrder(id){
+        try {
+        const orderRef = doc(db, "orders", id);
+        await updateDoc(orderRef, { status: "declined" });
+        setDeclineModal(false);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const showPayment = (id, status) => {
         const orderRef = doc(db, "orders", id);
@@ -249,47 +258,89 @@ export default function ApproveOrders() {
             </DialogContent>
         </Dialog>
 		<Dialog
-				classes={{
-				root: classes.modalRoot,
-				paper: classes.modal
-				}}
-				open={confirmModal}
-				TransitionComponent={Transition}
-				keepMounted
-				onClose={() => setConfirmModal(false)}
-				aria-labelledby="classic-modal-slide-title"
-				aria-describedby="classic-modal-slide-description"
-			>
-				<DialogTitle
-				id="classic-modal-slide-title"
-				disableTypography
-				className={classes.modalHeader}
-				>
-				<Button
-					simple
-					className={classes.modalCloseButton}
-					key="close"
-					aria-label="Close"
-					onClick={() => setConfirmModal(false)}
-				>
-					{" "}
-					<Close className={classes.modalClose} />
-				</Button>
-				<Typography variant="h4" className={classes.modalTitle}>Cancelar Orden</Typography>
-				</DialogTitle>
-				<DialogContent
-				id="classic-modal-slide-description"
-				className={classes.modalBody}
-				>
-				<Typography variant='body1' color='textSecondary' gutterBottom>¿Estás seguro de cancelar la orden?</Typography>
-				</DialogContent>
-				<DialogActions className={classes.modalFooter}>
-				<Button onClick={() => setConfirmModal(false)} color="secondary">
-					Close
-				</Button>
-				<Button onClick={() => confirmOrder(orderId, currentPermissionRef, currentProductId)} color="primary">Confirmar</Button>
-				</DialogActions>
-			</Dialog>
+            classes={{
+            root: classes.modalRoot,
+            paper: classes.modal
+            }}
+            open={confirmModal}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={() => setConfirmModal(false)}
+            aria-labelledby="classic-modal-slide-title"
+            aria-describedby="classic-modal-slide-description"
+        >
+            <DialogTitle
+            id="classic-modal-slide-title"
+            disableTypography
+            className={classes.modalHeader}
+            >
+            <Button
+                simple
+                className={classes.modalCloseButton}
+                key="close"
+                aria-label="Close"
+                onClick={() => setConfirmModal(false)}
+            >
+                {" "}
+                <Close className={classes.modalClose} />
+            </Button>
+            <Typography variant="h4" className={classes.modalTitle}>Confirmar Orden</Typography>
+            </DialogTitle>
+            <DialogContent
+            id="classic-modal-slide-description"
+            className={classes.modalBody}
+            >
+            <Typography variant='body1' color='textSecondary' gutterBottom>¿Estás seguro de confirmar la orden?</Typography>
+            </DialogContent>
+            <DialogActions className={classes.modalFooter}>
+            <Button onClick={() => setConfirmModal(false)} color="secondary">
+                Close
+            </Button>
+            <Button onClick={() => confirmOrder(orderId, currentPermissionRef, currentProductId)} color="primary">Confirmar</Button>
+            </DialogActions>
+        </Dialog>
+        <Dialog
+            classes={{
+            root: classes.modalRoot,
+            paper: classes.modal
+            }}
+            open={declineModal}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={() => setDeclineModal(false)}
+            aria-labelledby="classic-modal-slide-title"
+            aria-describedby="classic-modal-slide-description"
+        >
+            <DialogTitle
+            id="classic-modal-slide-title"
+            disableTypography
+            className={classes.modalHeader}
+            >
+            <Button
+                simple
+                className={classes.modalCloseButton}
+                key="close"
+                aria-label="Close"
+                onClick={() => setDeclineModal(false)}
+            >
+                {" "}
+                <Close className={classes.modalClose} />
+            </Button>
+            <Typography variant="h4" className={classes.modalTitle}>Cancelar Orden</Typography>
+            </DialogTitle>
+            <DialogContent
+            id="classic-modal-slide-description"
+            className={classes.modalBody}
+            >
+            <Typography variant='body1' color='textSecondary' gutterBottom>¿Estás seguro de cancelar la orden?</Typography>
+            </DialogContent>
+            <DialogActions className={classes.modalFooter}>
+            <Button onClick={() => setDeclineModal(false)} color="secondary">
+                Close
+            </Button>
+            <Button onClick={() => declineOrder(orderId)} color="primary">Confirmar</Button>
+            </DialogActions>
+        </Dialog>
         </>
   	);
 }

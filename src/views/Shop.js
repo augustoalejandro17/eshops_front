@@ -68,12 +68,23 @@ const Shop = () => {
     },[shopObject]);
 
     const showButton = (type, productIndex) => {
+        if(isShopOwner) {
+            switch(type) {
+                case "showProduct":
+                    return true;
+                case "addToCart":
+                    return false;
+                default:
+                    return false;
+            }
+        }
+        
         if(permissions){
             switch(type) {
                 case "showProduct":
-                    return (permissions.includes(productIndex) || isShopOwner) ? true : false;
+                    return ((permissions.includes(productIndex))) ? true : false;
                 case "addToCart":
-                    return (permissions.includes(productIndex) || isShopOwner) ? false : true;
+                    return ((permissions.includes(productIndex))) ? false : true;
                 default:
                     return false;
             }
