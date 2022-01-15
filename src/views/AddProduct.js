@@ -25,7 +25,9 @@ const AddProduct = () => {
     const { handleSubmit, control, watch } = useForm();
     useEffect(() => {
         const subscription = watch((data) => {   
-            setFile(data.attachments[0]);         
+            if(data.ImageAttachment){
+                setFile(data.ImageAttachment[0]);
+            }        
             setProductName(data.productName);
             setProductDescription(data.productDescription);
             setProductPrice(parseFloat(data.productPrice));
@@ -95,7 +97,7 @@ const AddProduct = () => {
             display: "grid",
             gridRowGap: "20px",
             padding: "20px",
-            margin: "10px 300px",
+            // margin: "10px 300px",
         }}
         >
         <Typography variant="h6"> Nuevo Producto</Typography>
@@ -106,6 +108,7 @@ const AddProduct = () => {
 
         <FormInputText name="productPrice" control={control} label="Precio del producto" type="text"/>
 
+        <Typography variant="overline" sx={{ marginBottom: "-16px" }}>Imagen del producto</Typography>
         <FormInputFile name="FileValue" control={control} label="File" />
 
     

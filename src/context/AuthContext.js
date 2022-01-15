@@ -57,6 +57,7 @@ export function AuthProvider({ children }) {
     };
 
     const logout = async (auth) => {
+        window.localStorage.clear();
         await signOut(auth);
     };
 

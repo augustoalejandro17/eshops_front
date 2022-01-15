@@ -199,72 +199,139 @@ const Chats = () => {
     }
     return (
         <div>
-            <Box sx={{ flexGrow: 1, marginTop: "20px" }}>
-            <Grid container>
-                <Grid item xs={12} >
-                    <Typography variant="h5" className="header-message">Mensajes</Typography>
+            <Box sx={{ flexGrow: 1, marginTop: "20px", display: { xs: 'none', md: 'block' } }}>
+                <Grid container>
+                    <Grid item xs={12} >
+                        <Typography variant="h5" className="header-message">Mensajes</Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Divider sx={{ marginTop: "20px" }}/>
-            <Grid container component={Paper} className={classes.chatSection}>
-            <Divider />
-                <Grid item xs={3} className={classes.borderRight500}>
-                    {uiChatsList  ? 
-                        <List>
-                            {uiChatsList.map(chat => {
-                                return (
-                                    <ListItem button selected={chat.active} key={chat.id} onClick={()=>{chatClicked(chat)}}>
-                                        <ListItemIcon>
-                                        <Avatar alt={chat.receiverName} src="https://" />
-                                        </ListItemIcon>
-                                        <ListItemText primary={chat.receiverName}>{chat.receiverName}</ListItemText>
-                                    </ListItem>
-                                )
-                            })}
-                    </List> : "No hay chats"}
-                    {
-                        emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
-                    }
-                </Grid>
-                <Grid item xs={9}>
-                    <List className={classes.messageArea}>
-                        {currentMessageList.length > 0 ? 
-                            currentMessageList.map(message => {
-                               const messagePosition = message.sender === senderRef ? "left" : "right";
-                                return (
-                                    <ListItem key={message.id}>
-                                        <Grid container>
-                                            <Grid item xs={12}>
-                                                <ListItemText align={messagePosition} primary={message.message}/>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <ListItemText align={messagePosition} secondary={message.stringDate}/>
-                                            </Grid>
-                                        </Grid>
-                                    </ListItem>
-                                )
-                            })
-                        :
-                            <ListItem key="1">
-                                <Grid container>
-                                    <Grid item xs={12}>
-                                        <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
-                                    </Grid>
-                                </Grid>
-                            </ListItem>
+                <Divider sx={{ marginTop: "20px" }}/>
+                <Grid container component={Paper} className={classes.chatSection}>
+                <Divider />
+                    <Grid item xs={3} className={classes.borderRight500}>
+                        {uiChatsList  ? 
+                            <List>
+                                {uiChatsList.map(chat => {
+                                    return (
+                                        <ListItem button selected={chat.active} key={chat.id} onClick={()=>{chatClicked(chat)}}>
+                                            <ListItemIcon>
+                                            <Avatar alt={chat.receiverName} src="https://" />
+                                            </ListItemIcon>
+                                            <ListItemText primary={chat.receiverName}>{chat.receiverName}</ListItemText>
+                                        </ListItem>
+                                    )
+                                })}
+                        </List> : "No hay chats"}
+                        {
+                            emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
                         }
-                    </List>
-                    <Divider />
-                    <Grid container style={{padding: '20px'}}>
-                        <Grid item xs={11}>
-                            <TextField id="outlined-basic-email" label="Type Something" fullWidth onChange={e=>{setMessage(e.target.value)}}/>
-                        </Grid>
-                        <Grid item xs={1} align="right">
-                            <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, senderRef, new Date())}}><SendIcon /></Fab>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <List className={classes.messageArea}>
+                            {currentMessageList.length > 0 ? 
+                                currentMessageList.map(message => {
+                                const messagePosition = message.sender === senderRef ? "left" : "right";
+                                    return (
+                                        <ListItem key={message.id}>
+                                            <Grid container>
+                                                <Grid item xs={12}>
+                                                    <ListItemText align={messagePosition} primary={message.message}/>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <ListItemText align={messagePosition} secondary={message.stringDate}/>
+                                                </Grid>
+                                            </Grid>
+                                        </ListItem>
+                                    )
+                                })
+                            :
+                                <ListItem key="1">
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
+                                        </Grid>
+                                    </Grid>
+                                </ListItem>
+                            }
+                        </List>
+                        <Divider />
+                        <Grid container style={{padding: '20px'}}>
+                            <Grid item xs={11}>
+                                <TextField id="outlined-basic-email" label="Type Something" fullWidth onChange={e=>{setMessage(e.target.value)}}/>
+                            </Grid>
+                            <Grid item xs={1} align="right">
+                                <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, senderRef, new Date())}}><SendIcon /></Fab>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </Box>
+            <Box sx={{ flexGrow: 1, marginTop: "20px", display: { xs: 'block', md: 'none' } }}>
+                <Grid container>
+                    <Grid item xs={12} >
+                        <Typography variant="h5" className="header-message">Mensajes</Typography>
+                    </Grid>
+                </Grid>
+                <Divider sx={{ marginTop: "20px" }}/>
+                <Grid container component={Paper} className={classes.chatSection}>
+                <Divider />
+                    <Grid item xs={3} className={classes.borderRight500}>
+                        {uiChatsList  ? 
+                            <List>
+                                {uiChatsList.map(chat => {
+                                    return (
+                                        <ListItem button selected={chat.active} key={chat.id} onClick={()=>{chatClicked(chat)}}>
+                                            <ListItemIcon>
+                                            <Avatar alt={chat.receiverName} src="https://" />
+                                            </ListItemIcon>
+                                        </ListItem>
+                                    )
+                                })}
+                        </List> : "No hay chats"}
+                        {
+                            emptyChats ? <Typography variant="h6" className="header-message">No hay chats</Typography> : null
+                        }
+                    </Grid>
+                    <Grid item xs={9}>
+                        <List className={classes.messageArea}>
+                            {currentMessageList.length > 0 ? 
+                                currentMessageList.map(message => {
+                                const messagePosition = message.sender === senderRef ? "left" : "right";
+                                    return (
+                                        <ListItem key={message.id}>
+                                            <Grid container>
+                                                {console.log(message)}
+                                                <Grid item xs={12}>
+                                                    <ListItemText align={messagePosition} primary={message.message}/>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <ListItemText align={messagePosition} secondary={message.stringDate}/>
+                                                </Grid>
+                                            </Grid>
+                                        </ListItem>
+                                    )
+                                })
+                            :
+                                <ListItem key="1">
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <ListItemText align="left" primary="Envia tu primer mensaje..."></ListItemText>
+                                        </Grid>
+                                    </Grid>
+                                </ListItem>
+                            }
+                        </List>
+                        <Divider />
+                        <Grid container style={{padding: '20px'}}>
+                            <Grid item xs={11}>
+                                <TextField id="outlined-basic-email" label="Type Something" fullWidth onChange={e=>{setMessage(e.target.value)}}/>
+                            </Grid>
+                            <Grid item xs={1} align="right">
+                                <Fab color="primary" aria-label="add" onClick={()=>{sendMessage(message, senderRef, new Date())}}><SendIcon /></Fab>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Box>
         </div>
     );

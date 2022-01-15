@@ -18,13 +18,22 @@ const AddContent = () => {
     const { productIndex } = useParams();
 
     const [file, setFile] = useState(null);
+    const [fileUrl, setFileUrl] = useState(null);
+    const [video, setVideo] = useState(null);
+    const [videoUrl, setVideoUrl] = useState(null);
     const [contentName, setContentName] = useState(null);
     const [contentDescription, setcontentDescription] = useState(null);
 
     const { handleSubmit, control, watch } = useForm();
     useEffect(() => {
         const subscription = watch((data) => {   
-            setFile(data.attachments[0]);         
+            console.log(data)
+            if(data.ImageAttachment){
+                setFile(data.ImageAttachment[0]);
+            }
+            else if(data.VideoAttachment){
+                setVideo(data.VideoAttachment[0]);
+            }         
             setContentName(data.contentName);
             setcontentDescription(data.contentDescription);
         });
@@ -92,7 +101,7 @@ const AddContent = () => {
             display: "grid",
             gridRowGap: "20px",
             padding: "20px",
-            margin: "10px 300px",
+            // margin: "10px 300px",
         }}
         >
         <Typography variant="h6"> Nueva Entrada</Typography>
@@ -101,8 +110,12 @@ const AddContent = () => {
         
         <FormInputText name="contentDescription" control={control} label="Descripción" type="text"/>
 
-        <FormInputFile name="FileValue" control={control} label="File" />
-    
+        <Typography variant="overline" sx={{ marginBottom: "-16px" }}>Imagen del contenido</Typography>
+        <FormInputFile name="ImageAttachment" control={control} label="File" />
+        
+        <Typography variant="overline" sx={{ marginBottom: "-16px" }}>Video (opcional)</Typography>
+        <FormInputFile name="VideoAttachment" control={control} label="Video" />
+
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
             {" "}
             Submit{" "}

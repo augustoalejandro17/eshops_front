@@ -5,9 +5,6 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import GridContainer from "components/Grid/GridContainer.js";
-import { Container, Grid, CardMedia, CardActions, CardActionArea } from '@mui/material';
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import { useAuth } from "context/AuthContext"
 
@@ -17,7 +14,6 @@ import { storage, db } from "../firebase.js"
 
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Close from "@mui/icons-material/Close";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
 import OrdersTable from 'components/OrdersTable';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
@@ -28,7 +24,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
 import Slide from "@mui/material/Slide";
-import { FormInputText } from "components/FormInputText";
 import { FormInputFile } from "components/FormInputFile";
 import { Paper } from "@mui/material";
 
@@ -91,7 +86,6 @@ const MyOrders = (props) => {
 	const [confirmationModal, setConfirmationModal] = useState(false);
 	const [successModal, setSuccessModal] = useState(false);
 
-	const [data, setData] = useState([]);
     const [rows, setRows] = useState(null);
 	const [orderId, setOrderId] = useState(null);
 
@@ -176,10 +170,10 @@ const MyOrders = (props) => {
 			if (dataToSet) {
 				(dataToSet.forEach((order) => {
 					switch (order.status) {
-						case "pending":
+						case "payment-pending":
 							setOrdersPending([...ordersPending, order]);
 							break;
-						case "completed":
+						case "confirmed":
 							setOrdersCompleted([...ordersCompleted, order]);
 							break;
 						case "canceled":
@@ -203,7 +197,7 @@ const MyOrders = (props) => {
 	};
 
 	const headers = useMemo(
-		() => ["Producto", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
+		() => ["Producto(s)", "Fecha de la orden", "Valor Total", "Estado de la orden", "Acciones"]
 	, []);
 
 	
@@ -226,11 +220,12 @@ const MyOrders = (props) => {
 
         const rowsToSet = currentTab.map((row) => {
 			let translatedStatus = "";
+			let products = row.products.map((product) => product).join(", ");
 			switch (row.status) {
-				case "pending":
+				case "payment-pending":
 					translatedStatus = "Pendiente";
 					break;
-				case "completed":
+				case "confirmed":
 					translatedStatus = "Completada";
 					break;
 				case "canceled":
@@ -248,7 +243,7 @@ const MyOrders = (props) => {
             key={row.id}
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                <TableCell align="center">{row.products}</TableCell>
+                <TableCell align="center">{products}</TableCell>
                 <TableCell align="center">{row.date.toDate().toLocaleString('en-GB')}</TableCell>
                 <TableCell align="center">${row.totalValue}</TableCell>
                 <TableCell align="center">{translatedStatus}</TableCell>

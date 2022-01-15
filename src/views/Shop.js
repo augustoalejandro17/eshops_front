@@ -21,6 +21,7 @@ const Shop = () => {
     const { shopIndex } = useParams();
     const { userRef, userPermissions } = useAuth();
     const { addItemToCart } = useAuth();
+    const [cart, setCart] = useState([]);
     const [cards, setCards] = useState();
     const [currentShop, setCurrentShop] = useState();
     const [isShopOwner, setIsShopOwner] = useState(false);
@@ -32,7 +33,20 @@ const Shop = () => {
                  userRef: userRef,
         };
     }, [shopIndex, userRef]); 
+    
+    useEffect(() => {
+        const currentCart = window.localStorage.getItem("cart");
+        if (currentCart) {
+            setCart(JSON.parse(currentCart));
+        }
+    }, []);
 
+    useEffect(() => {
+        if(cart.length !== 0){
+            window.localStorage.setItem('cart', JSON.stringify(cart));
+        }
+    }, [cart]);
+    
     useEffect(() => {
         if(userPermissions) {
             setPermissions(userPermissions.productsAllowed);
@@ -66,7 +80,22 @@ const Shop = () => {
         }
         fetchStoreData(shopObject.index, shopObject.userRef);
     },[shopObject]);
+    const itemInCart = (item, cart) => {
+        if (cart.length === 0) {
+            return false;
+        }
+        // console.log(typeof(cart));
+        // console.log(cart);
+        // return true
+        return cart.find(cartItem => cartItem.id === item.id);
+    }
 
+    const addToCart = (item) => {
+        if(!itemInCart(item, cart)) {
+            // console.log("adding to cart");
+            setCart([...cart, item]);
+        }
+    }
     const showButton = (type, productIndex) => {
         if(isShopOwner) {
             switch(type) {
@@ -78,7 +107,7 @@ const Shop = () => {
                     return false;
             }
         }
-        
+
         if(permissions){
             switch(type) {
                 case "showProduct":
@@ -151,7 +180,7 @@ const Shop = () => {
                                     </Link> : null
                                 }
                                 { showButton("addToCart", card.id) ?
-                                    <Button onClick={() => { addItemToCart(card);}} color="primary">Añadir al carrito</Button>
+                                    <Button onClick={() => { addItemToCart(card); addToCart(card)}} color="primary">Añadir al carrito</Button>
                                     :null
                                 }
                             </CardActions>

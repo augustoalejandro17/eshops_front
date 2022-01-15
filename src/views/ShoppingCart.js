@@ -6,6 +6,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -14,22 +15,42 @@ import { useAuth } from "context/AuthContext"
 import { Timestamp, addDoc, collection } from "firebase/firestore"; 
 import { db } from "../firebase.js"
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Review your order', 'Payment details'];
 
 const theme = createTheme();
 
-function getStepContent() {
-    return <Review />;
+function getStepContent(activeStep, shoppingCartProp) {
+    return <Review shoppingCart={shoppingCartProp}/>;
 }
 
 const ShoppingCart = () => {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const { cart, resetCart } = useAuth();
+    const [activeStep, setActiveStep] = React.useState(1);
     const { currentUserData } = useAuth();
+    const [shoppingCart, setShoppingCart] = useState([]);
+
+	useEffect(() => {
+        const currentCart = window.localStorage.getItem("cart");
+        if (currentCart) {
+            setShoppingCart(JSON.parse(currentCart));
+        }
+    }, []);
+
+	useEffect(() => {
+        if(shoppingCart.length !== 0){
+            window.localStorage.setItem('cart', JSON.stringify(shoppingCart));
+        }
+    }, [shoppingCart]);
+
+	const cleanCart = () => {
+		window.localStorage.removeItem('cart');
+		setShoppingCart([]);
+	}
+
     const handleNext = (items) => {
         async function storeOrder(docData) {
             const orderRef = await addDoc(collection(db, "orders"), docData).then(() => {console.log("success")}).catch((e) => {console.log(e)});
         }
+
         const setupData = {
             status: 'payment-pending',
             userId: items[0].userId,
@@ -42,12 +63,9 @@ const ShoppingCart = () => {
 
         setActiveStep(activeStep + 1);
         storeOrder(setupData);
-        resetCart();
+		window.localStorage.removeItem('cart');
     };
 
-//   const handleBack = () => {
-//     setActiveStep(activeStep - 1);
-//   };
     return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -60,25 +78,40 @@ const ShoppingCart = () => {
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
+                  Gracias por tu orden.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
+                  Tú orden ha sido enviada. Puedes realizar el pago dirigiendote a mis ordenes dando click en el botón de abajo.
                 </Typography>
+				<Box mt={5}>
+					<Link style={{ textDecoration: "none" }} 
+						to={`/my-orders`}
+					>  
+						<Button variant="contained" color="primary">
+							Ver mis ordenes
+						</Button>
+					</Link>
+					
+				</Box>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
-                {cart.length > 0 ? 
+                {getStepContent(activeStep, shoppingCart)}
+                {shoppingCart.length > 0 ? 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+					<Button
+                    variant="contained"
+                    onClick={() => { cleanCart();}} 
+                    sx={{ mt: 3, ml: 1 }}
+                  	>
+                    Vaciar carrito
+                  </Button>
                   <Button
                     variant="contained"
-                    onClick={() => { handleNext(cart)}} 
+                    onClick={() => { handleNext(shoppingCart)}} 
                     sx={{ mt: 3, ml: 1 }}
                   >
-                    Place order
+                    Confirmar orden
                   </Button>
                 </Box> 
                 : null}
@@ -94,13 +127,15 @@ const ShoppingCart = () => {
 export default ShoppingCart;
 
 
-function Review() {
-    const { cart } = useAuth();
+function Review(props) {
+	const { shoppingCart } = props;
     const [total, setTotal] = useState(0);
+	// const [shoppingCart, setShoppingCart] = useState(shoppingCartProp);
+	
 
     useEffect(() => {
-        setTotal(cart.reduce((acc, item) => acc + item.price, 0));
-    }, [cart]);
+        setTotal(shoppingCart.reduce((acc, item) => acc + item.price, 0));
+    }, [shoppingCart]);
 
   return (
     <React.Fragment>
@@ -108,12 +143,14 @@ function Review() {
         Order summary
       </Typography>
       <List disablePadding>
-        {cart.map((product) => (
-          <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
-            <ListItemText primary={product.name} secondary={product.description} />
-            <Typography variant="body2">${product.price}</Typography>
-          </ListItem>
-        ))}
+		  {shoppingCart.length > 0? shoppingCart.map((item, index) => (
+			
+			<ListItem key={index}>
+				<ListItemText primary={item.name} secondary={item.description} />
+            	<Typography variant="body2">${item.price}</Typography>
+			</ListItem>
+		  )) : 
+		  <Typography variant="body2" sx={{alignContent:"center"}}>No hay productos en el carrito</Typography>}
 
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />

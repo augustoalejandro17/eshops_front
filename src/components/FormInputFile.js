@@ -7,7 +7,7 @@ export const FormInputFile = ({ name, control, label, type }) => {
 
     return (
         <Controller
-          name="attachments"
+          name={name}
           control={control}
           defaultValue=""
           render={({ field, field: { value },
