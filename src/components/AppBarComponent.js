@@ -131,19 +131,19 @@ const DefaultAppBar = (props) => {
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleMenuClose}>
-            <NavLink style={{ textDecoration: "none", color: "black" }} 
+            <Link style={{ textDecoration: "none", color: "black" }} 
                 to={`/profile/${userRef}`}>  Perfil
-            </NavLink>
+            </Link>
         </MenuItem>
         <MenuItem onClick={handleMenuClose} >
-            <NavLink style={{ textDecoration: "none", color: "black" }} 
+            <Link style={{ textDecoration: "none", color: "black" }} 
                 to={`/chats`}>  Mensajes
-            </NavLink>
+            </Link>
         </MenuItem>
         <MenuItem onClick={handleMenuClose} >
-            <NavLink style={{ textDecoration: "none", color: "black" }} 
+            <Link style={{ textDecoration: "none", color: "black" }} 
                 to={`/approve-orders`}>  Aprovar ordenes
-            </NavLink>
+            </Link>
         </MenuItem>
         <MenuItem onClick={handleLogout}>
             Cerrar Sesión

@@ -61,17 +61,6 @@ export function AuthProvider({ children }) {
         await signOut(auth);
     };
 
-    // function resetPassword(email) {
-    //     return auth.sendPasswordResetEmail(email)
-    // }
-
-    // function updateEmail(email) {
-    //     return currentUser.updateEmail(email)
-    // }
-
-    // function updatePassword(password) {
-    //     return currentUser.updatePassword(password)
-    // }
     useEffect(() => {
         const unsubscribe = 
         onAuthStateChanged(auth, (currentUser) => {
@@ -113,17 +102,6 @@ export function AuthProvider({ children }) {
     }, [userPermissionsRef]);
 
     
-    const addItemToCart = (item) => {
-        setCart([...cart, item]);
-    }
-
-    const removeItemFromCart = (item) => {
-        setCart(cart.filter(cartItem => cartItem.id !== item.id));
-    }
-
-    const resetCart = () => {
-        setCart([]);
-    }
 
     const value = {
         currentUser,
@@ -134,9 +112,6 @@ export function AuthProvider({ children }) {
         signup,
         login,
         logout,
-        addItemToCart,
-        removeItemFromCart,
-        resetCart
         // resetPassword,
         // updateEmail,
         // updatePassword
