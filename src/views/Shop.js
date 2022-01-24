@@ -180,7 +180,7 @@ const Shop = () => {
                                     </Link> : null
                                 }
                                 { showButton("addToCart", card.id) ?
-                                    <Button onClick={() => { addItemToCart(card); addToCart(card)}} color="primary">Añadir al carrito</Button>
+                                    <Button onClick={() => {addToCart(card)}} color="primary">Añadir al carrito</Button>
                                     :null
                                 }
                             </CardActions>

@@ -97,7 +97,7 @@ const AddShop = () => {
         
         <FormInputText name="shopDescription" control={control} label="Descripción" type="text"/>
 
-        <FormInputFile name="FileValue" control={control} label="File"/>
+        <FormInputFile name="attachments" control={control} label="File"/>
 
     
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>

@@ -536,7 +536,7 @@ export const PaymentForm = (props) => {
 			>
 				<Typography variant="h6"> Imagen</Typography>
 
-				<FormInputFile name="FileValue" control={control} label="File" />
+				<FormInputFile name="attachments" control={control} label="File" />
 			
 				<Button onClick={handleSubmit(uploadImage)} variant={"contained"}>
 					{" "}

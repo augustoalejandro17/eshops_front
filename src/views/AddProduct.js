@@ -36,6 +36,7 @@ const AddProduct = () => {
     }, [watch]);
 
     const onSubmit = () => {
+        console.log(file)
         if(file == null)
             return;
         const storageRef = ref(storage, 'product-images/' + file.name);
@@ -109,7 +110,7 @@ const AddProduct = () => {
         <FormInputText name="productPrice" control={control} label="Precio del producto" type="text"/>
 
         <Typography variant="overline" sx={{ marginBottom: "-16px" }}>Imagen del producto</Typography>
-        <FormInputFile name="FileValue" control={control} label="File" />
+        <FormInputFile name="ImageAttachment" control={control} label="File" />
 
     
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
